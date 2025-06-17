@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiClock, FiStar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiClock, FiStar, FiChevronLeft, FiChevronRight, FiPlay } from "react-icons/fi";
 
 type Movie = {
   id: number;
@@ -11,12 +11,15 @@ type Movie = {
   rating: number;
   posterUrl: string;
   backdropUrl: string;
+  trailerUrl: string;
 };
 
 export default function MoviesPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [featuredMovie, setFeaturedMovie] = useState<Movie | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [hoveredMovie, setHoveredMovie] = useState<number | null>(null);
+  const videoRefs = useRef<{[key: number]: HTMLVideoElement | null}>({});
   const navigate = useNavigate();
 
   // Simulación de API
@@ -27,61 +30,67 @@ export default function MoviesPage() {
         id: 1,
         title: "Interstellar",
         duration: 169,
-        description: "Un grupo de exploradores se embarca en el viaje más importante en la historia de la humanidad, viajando más allá de los límites de nuestra galaxia para descubrir si la humanidad tiene un futuro entre las estrellas.",
+        description: "Un grupo de exploradores se embarca en el viaje más importante en la historia de la humanidad.",
         genre: "Ciencia ficción",
         rating: 4.8,
         posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+        trailerUrl: "https://www.youtube.com/embed/zSWdZVtXT7E?autoplay=1&mute=1&controls=0&loop=1&playlist=zSWdZVtXT7E"
       },
       {
         id: 2,
         title: "Inception",
         duration: 148,
-        description: "Dom Cobb es un ladrón con una rara habilidad para entrar en los sueños de la gente y robarles los secretos de sus subconscientes. Su habilidad lo ha convertido en un codiciado jugador en el mundo del espionaje corporativo.",
+        description: "Dom Cobb es un ladrón con una rara habilidad para entrar en los sueños de la gente.",
         genre: "Thriller psicológico",
         rating: 4.7,
         posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
+        trailerUrl: "https://www.youtube.com/embed/YoHD9XEInc0?autoplay=1&mute=1&controls=0&loop=1&playlist=YoHD9XEInc0"
       },
       {
         id: 3,
         title: "Toy Story",
         duration: 81,
-        description: "Los juguetes de Andy, un niño de 6 años, temen que un nuevo regalo de cumpleaños los sustituya en el corazón de su dueño. Woody, un vaquero que ha sido su juguete favorito hasta ahora, trata de tranquilizarlos hasta que aparece Buzz Lightyear.",
+        description: "Los juguetes de Andy, un niño de 6 años, temen que un nuevo regalo los sustituya.",
         genre: "Animación",
         rating: 4.5,
         posterUrl: "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/dji4Fm0gCDVb9DQQMRvAI8YNnTz.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/dji4Fm0gCDVb9DQQMRvAI8YNnTz.jpg",
+        trailerUrl: "https://www.youtube.com/embed/wmiIUN-7qhE?autoplay=1&mute=1&controls=0&loop=1&playlist=wmiIUN-7qhE"
       },
       {
         id: 4,
         title: "The Dark Knight",
         duration: 152,
-        description: "Batman tiene que mantener el equilibrio entre el heroísmo y el vigilantismo para pelear contra un vil criminal conocido como el Joker, que sume a Ciudad Gótica en el caos.",
+        description: "Batman tiene que mantener el equilibrio entre el heroísmo y el vigilantismo.",
         genre: "Acción",
         rating: 4.9,
         posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/h3jYanWMEJq6JJsCopy1h7cT2Hs.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/h3jYanWMEJq6JJsCopy1h7cT2Hs.jpg",
+        trailerUrl: "https://www.youtube.com/embed/EXeTwQWrcwY?autoplay=1&mute=1&controls=0&loop=1&playlist=EXeTwQWrcwY"
       },
       {
         id: 5,
         title: "Pulp Fiction",
         duration: 154,
-        description: "Las vidas de dos mafiosos, un boxeador, la esposa de un gánster y un par de bandidos se entrelazan en cuatro historias de violencia y redención.",
+        description: "Las vidas de dos mafiosos, un boxeador y un par de bandidos se entrelazan.",
         genre: "Crimen",
         rating: 4.6,
         posterUrl: "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg",
+        trailerUrl: "https://www.youtube.com/embed/s7EdQ4FqbhY?autoplay=1&mute=1&controls=0&loop=1&playlist=s7EdQ4FqbhY"
       },
       {
         id: 6,
         title: "The Shawshank Redemption",
         duration: 142,
-        description: "Un banquero llamado Andy Dufresne es condenado a cadena perpetua por el asesinato de su esposa. A pesar de declararse inocente, es enviado a la prisión de Shawshank, donde forjará una gran amistad con Red.",
+        description: "Un banquero es condenado a cadena perpetua por el asesinato de su esposa.",
         genre: "Drama",
         rating: 4.9,
         posterUrl: "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
-        backdropUrl: "https://image.tmdb.org/t/p/original/wPU78OPN4BYEgWYdXyg0phMee64.jpg"
+        backdropUrl: "https://image.tmdb.org/t/p/original/wPU78OPN4BYEgWYdXyg0phMee64.jpg",
+        trailerUrl: "https://www.youtube.com/embed/6hB3S9bIaco?autoplay=1&mute=1&controls=0&loop=1&playlist=6hB3S9bIaco"
       }
     ];
     setMovies(mockMovies);
@@ -100,6 +109,23 @@ export default function MoviesPage() {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? movies.length - 1 : prev - 1));
     setFeaturedMovie(movies[currentSlide === 0 ? movies.length - 1 : currentSlide - 1]);
+  };
+
+  const handleMouseEnter = (movieId: number) => {
+    setHoveredMovie(movieId);
+    const video = videoRefs.current[movieId];
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(e => console.log("Autoplay prevented:", e));
+    }
+  };
+
+  const handleMouseLeave = (movieId: number) => {
+    setHoveredMovie(null);
+    const video = videoRefs.current[movieId];
+    if (video) {
+      video.pause();
+    }
   };
 
   return (
@@ -185,19 +211,46 @@ export default function MoviesPage() {
           {movies.map((movie) => (
             <div 
               key={movie.id} 
-              className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition hover:-translate-y-2 hover:shadow-xl cursor-pointer"
+              className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition hover:-translate-y-2 hover:shadow-xl cursor-pointer relative"
               onClick={() => handleSelect(movie.id)}
+              onMouseEnter={() => handleMouseEnter(movie.id)}
+              onMouseLeave={() => handleMouseLeave(movie.id)}
             >
-              <div className="relative">
+              <div className="relative h-80 w-full">
+                {/* Poster Image */}
                 <img 
                   src={movie.posterUrl} 
                   alt={movie.title}
-                  className="w-full h-80 object-cover"
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${hoveredMovie === movie.id ? 'opacity-0' : 'opacity-100'}`}
                 />
+                
+                {/* Trailer Video */}
+                <div className={`absolute inset-0 transition-opacity duration-300 ${hoveredMovie === movie.id ? 'opacity-100' : 'opacity-0'}`}>
+                  <iframe
+                    ref={el => videoRefs.current[movie.id] = el as HTMLVideoElement}
+                    src={hoveredMovie === movie.id ? movie.trailerUrl : ''}
+                    className="w-full h-full object-cover"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={movie.title}
+                  />
+                </div>
+                
+                {/* Play Button Indicator */}
+                {hoveredMovie !== movie.id && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 hover:opacity-100 transition-opacity">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 border-2 border-white/50">
+                      <FiPlay className="text-white text-2xl" />
+                    </div>
+                  </div>
+                )}
+                
                 <div className="absolute top-2 right-2 bg-black/70 rounded-full px-2 py-1 flex items-center text-yellow-400 text-sm">
                   <FiStar className="mr-1" /> {movie.rating}
                 </div>
               </div>
+              
               <div className="p-4">
                 <h3 className="font-bold text-lg mb-1">{movie.title}</h3>
                 <div className="flex justify-between text-sm text-gray-400 mb-2">

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiClock, FiStar, FiChevronLeft, FiChevronRight, FiPlay } from "react-icons/fi";
+import Header from '../components/Header';
 
 type Movie = {
   id: number;
@@ -130,6 +131,7 @@ export default function MoviesPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
+      <Header />
       {/* Hero Section with Featured Movie */}
       {featuredMovie && (
         <div 

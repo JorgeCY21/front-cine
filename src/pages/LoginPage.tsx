@@ -51,7 +51,7 @@ export default function LoginPage() {
         </div>
         
         <p className="text-sm text-center text-gray-300 mb-8 tracking-wider">
-          ENTER YOUR CREDENTIALS TO ACCESS THE MAGIC OF CINEMA
+          Ingresa tus credenciales para disfrutar de una gran experiencia
         </p>
         
         {/* Input fields */}
@@ -65,7 +65,7 @@ export default function LoginPage() {
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
             <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1 group-hover:text-indigo-300">
-              Email Address
+              Correo electrónico
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
           </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
             <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1 group-hover:text-indigo-300">
-              Password
+              Contraseña
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
           </div>
@@ -89,7 +89,7 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={isLoading}
-          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 ${
+          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${
             isLoading 
               ? 'bg-indigo-700 cursor-not-allowed' 
               : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
@@ -101,23 +101,23 @@ export default function LoginPage() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              PROCESSING...
+              INGRESANDO...
             </div>
           ) : (
-            'ACCESS CINEMAX'
+            'Iniciar Sesión'
           )}
         </button>
         
         {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400">
-            Don't have an account?{' '}
+            ¿No tienes una cuenta?{' '}
             <span className="text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors font-medium">
-              Join CineMax
+              Únete a CineMax
             </span>
           </p>
           <p className="text-xs text-gray-500 mt-2">
-            © 2023 CineMax Premium Experience
+            © 2025 CineMax Premium Experience
           </p>
         </div>
       </div>

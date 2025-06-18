@@ -1,5 +1,15 @@
-// components/MovieCarousel.tsx
 import { FiChevronLeft, FiChevronRight, FiClock, FiStar } from "react-icons/fi";
+
+type Movie = {
+  id: number;
+  title: string;
+  duration: number;
+  description: string;
+  genre: string;
+  rating: number;
+  posterUrl: string;
+  backdropUrl: string;
+};
 
 interface Props {
   movie: Movie;

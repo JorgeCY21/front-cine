@@ -58,13 +58,14 @@ export default function LoginPage() {
         <div className="space-y-5">
           <div className="relative group">
             <input
+              id="email"
               type="email"
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1 group-hover:text-indigo-300">
+            <label  htmlFor="email" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300">
               Correo electrónico
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
@@ -72,13 +73,14 @@ export default function LoginPage() {
           
           <div className="relative group">
             <input
+              id="password"
               type="password"
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1 group-hover:text-indigo-300">
+            <label htmlFor="password" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300">
               Contraseña
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
@@ -114,7 +116,7 @@ export default function LoginPage() {
             ¿No tienes una cuenta?{' '}
             <span
               onClick={() => navigate("/register")}
-              className="text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors font-medium cursor-pointer"
+              className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium cursor-pointer"
             >
               Únete a CineMax
             </span>

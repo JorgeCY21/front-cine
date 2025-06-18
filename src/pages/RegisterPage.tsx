@@ -115,6 +115,7 @@ export default function RegisterPage() {
           {/* Campo Nombres */}
           <div className="relative group">
             <input
+              id="name"
               type="text"
               placeholder=" "
               value={firstName}
@@ -125,7 +126,7 @@ export default function RegisterPage() {
               }}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1">
+            <label htmlFor="name" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm ">
               Nombres
             </label>
             {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>}
@@ -134,6 +135,7 @@ export default function RegisterPage() {
           {/* Campo Apellidos */}
           <div className="relative group">
             <input
+              id="lastName"
               type="text"
               placeholder=" "
               value={lastName}
@@ -144,7 +146,7 @@ export default function RegisterPage() {
               }}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1">
+            <label htmlFor="lastName" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm ">
               Apellidos
             </label>
             {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>}
@@ -153,13 +155,14 @@ export default function RegisterPage() {
           {/* Campo Correo */}
           <div className="relative group">
             <input
+              id="email"
               type="email"
               placeholder=" "
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1">
+            <label htmlFor="email" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm ">
               Correo electrónico
             </label>
             {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
@@ -169,13 +172,14 @@ export default function RegisterPage() {
           <div className="relative group">
             <div className="relative">
               <input
+                id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder=" "
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 pr-10 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
               />
-              <label className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm bg-gray-800 px-1">
+              <label htmlFor="password" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm ">
                 Contraseña
               </label>
               <button

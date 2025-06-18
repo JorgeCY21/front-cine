@@ -112,7 +112,10 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400">
             ¿No tienes una cuenta?{' '}
-            <span className="text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors font-medium">
+            <span
+              onClick={() => navigate("/register")}
+              className="text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors font-medium cursor-pointer"
+            >
               Únete a CineMax
             </span>
           </p>

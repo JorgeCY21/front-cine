@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiClock, FiMapPin, FiFilm, FiArrowLeft } from "react-icons/fi";
 import { FaTicketAlt } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SeatInfo = {
   id: number;
@@ -25,18 +25,17 @@ export default function ConfirmationPage() {
   const [seats, setSeats] = useState<SeatInfo[]>([]);
   const [showtime, setShowtime] = useState<ShowtimeInfo | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const storedSeats = JSON.parse(localStorage.getItem("selectedSeats") || "[]") as number[];
     const storedShowtimeId = localStorage.getItem("showtimeId");
 
-    // Validar datos
     if (!storedShowtimeId || storedSeats.length === 0) {
       navigate("/movies");
       return;
     }
 
-    // Simular recuperación de datos del showtime
     const mockShowtimes: ShowtimeInfo[] = [
       {
         id: 1,
@@ -73,7 +72,6 @@ export default function ConfirmationPage() {
     }
     setShowtime(foundShowtime);
 
-    // Simular recuperación de info de asientos
     const allSeats: SeatInfo[] = [];
     const rows = ["A", "B", "C", "D", "E"];
     const seatTypes: ("standard" | "premium" | "vip")[] = ["standard", "standard", "premium", "premium", "vip"];
@@ -108,12 +106,13 @@ export default function ConfirmationPage() {
 
   const handleFinish = () => {
     setIsCompleting(true);
-    // Simular proceso de pago
     setTimeout(() => {
-      alert("¡Compra exitosa! Tu reservación está confirmada.");
+      const audio = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_5ac6c2c8b8.mp3");
+      audio.play();
+      setIsModalOpen(true);
+      setIsCompleting(false);
       localStorage.removeItem("selectedSeats");
       localStorage.removeItem("showtimeId");
-      navigate("/movies");
     }, 2000);
   };
 
@@ -127,7 +126,6 @@ export default function ConfirmationPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      {/* Header */}
       <header className="bg-black/50 backdrop-blur-md py-4 px-6 shadow-lg sticky top-0 z-10">
         <div className="container mx-auto flex justify-between items-center">
           <button 
@@ -137,13 +135,12 @@ export default function ConfirmationPage() {
             <FiArrowLeft className="mr-2" /> Volver
           </button>
           <h1 className="text-xl font-bold">Confirmación de Compra</h1>
-          <div className="w-8"></div> {/* Spacer */}
+          <div className="w-8"></div>
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Success Header */}
+        {/* Header de éxito */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,7 +154,7 @@ export default function ConfirmationPage() {
           </p>
         </motion.div>
 
-        {/* Movie Card */}
+        {/* Información película y asientos */}
         {showtime && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -175,42 +172,34 @@ export default function ConfirmationPage() {
               </div>
               <div className="md:w-2/3 p-6">
                 <h3 className="text-2xl font-bold mb-2">{showtime.movieTitle}</h3>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-start">
-                    <FiClock className="text-indigo-400 mt-1 mr-3 flex-shrink-0" />
+                    <FiClock className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Fecha y Hora</p>
                       <p className="font-medium">
                         {new Date(showtime.startTime).toLocaleDateString('es-ES', { 
-                          weekday: 'long', 
-                          day: 'numeric', 
-                          month: 'long',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                          weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
                         })}
                       </p>
                     </div>
                   </div>
-                  
                   <div className="flex items-start">
-                    <FiMapPin className="text-indigo-400 mt-1 mr-3 flex-shrink-0" />
+                    <FiMapPin className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Sala</p>
                       <p className="font-medium">{showtime.roomName}</p>
                     </div>
                   </div>
-                  
                   <div className="flex items-start">
-                    <FiFilm className="text-indigo-400 mt-1 mr-3 flex-shrink-0" />
+                    <FiFilm className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Formato</p>
                       <p className="font-medium">{showtime.format}</p>
                     </div>
                   </div>
-                  
                   <div className="flex items-start">
-                    <FaTicketAlt  className="text-indigo-400 mt-1 mr-3 flex-shrink-0" />
+                    <FaTicketAlt className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Asientos</p>
                       <p className="font-medium">{seats.length}</p>
@@ -222,7 +211,7 @@ export default function ConfirmationPage() {
           </motion.div>
         )}
 
-        {/* Seats Section */}
+        {/* Asientos y total */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -230,10 +219,9 @@ export default function ConfirmationPage() {
           className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-700"
         >
           <h3 className="text-xl font-bold mb-4 flex items-center">
-            <FaTicketAlt  className="text-indigo-400 mr-2" />
+            <FaTicketAlt className="text-indigo-400 mr-2" />
             Tus Asientos Seleccionados
           </h3>
-          
           <div className="flex flex-wrap gap-3 mb-6">
             {seats.map((seat) => (
               <motion.div
@@ -248,14 +236,13 @@ export default function ConfirmationPage() {
               </motion.div>
             ))}
           </div>
-          
           <div className="flex justify-between items-center pt-4 border-t border-gray-700">
             <p className="text-gray-300">Total a pagar:</p>
-            <p className="text-3xl font-bold text-yellow-400">${calculateTotal().toFixed(2)}</p>
+            <p className="text-3xl font-bold text-yellow-400">S/.{calculateTotal().toFixed(2)}</p>
           </div>
         </motion.div>
 
-        {/* Action Button */}
+        {/* Botón Confirmar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -267,7 +254,7 @@ export default function ConfirmationPage() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             disabled={isCompleting}
-            className={`relative px-8 py-4 rounded-xl font-bold text-lg shadow-lg w-full max-w-md mx-auto ${
+            className={`relative px-8 py-4 rounded-xl font-bold text-lg shadow-lg w-full max-w-md mx-auto cursor-pointer ${
               isCompleting 
                 ? "bg-indigo-700 cursor-not-allowed" 
                 : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
@@ -282,12 +269,44 @@ export default function ConfirmationPage() {
               "Confirmar y Pagar Ahora"
             )}
           </motion.button>
-          
+
           <p className="text-gray-400 mt-4 text-sm">
             Al confirmar, aceptas nuestros Términos y Condiciones
           </p>
         </motion.div>
       </div>
+
+      {/* MODAL */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-gray-900 text-white rounded-xl p-8 max-w-md w-full text-center border border-gray-700 shadow-2xl"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            >
+              <FiCheckCircle className="text-green-400 text-5xl mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">¡Compra Confirmada!</h2>
+              <p className="text-gray-300 mb-6">Gracias por tu compra. Disfruta tu película.</p>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  navigate("/movies");
+                }}
+                className="mt-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white font-semibold transition cursor-pointer"
+              >
+                Volver al inicio
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-black/50 py-6 mt-12 border-t border-gray-800">

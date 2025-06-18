@@ -81,7 +81,7 @@ export default function MovieCard({ movie, onSelect }: Props) {
         <p className="text-gray-300 text-sm line-clamp-2">
           {movie.description}
         </p>
-        <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded transition">
+        <button className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded transition cursor-pointer">
           Ver Horarios
         </button>
       </div>

@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FiClock, FiMapPin, FiCalendar, FiChevronLeft } from "react-icons/fi";
 import { motion } from "framer-motion";
+import Footer from "../components/Footer";
 
 type Showtime = {
   id: number;
@@ -153,7 +154,7 @@ export default function ShowtimesPage() {
                   <button
                     key={index}
                     onClick={() => setSelectedDate(date)}
-                    className={`flex flex-col items-center justify-center px-4 py-2 mx-1 rounded-lg min-w-16 transition ${date.toDateString() === selectedDate.toDateString() ? 'bg-indigo-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    className={`flex flex-col items-center justify-center px-4 py-2 mx-1 rounded-lg min-w-16 transition cursor-pointer ${date.toDateString() === selectedDate.toDateString() ? 'bg-indigo-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                   >
                     <span className="text-sm font-medium">
                       {date.toLocaleDateString([], { weekday: 'short' })}
@@ -213,7 +214,7 @@ export default function ShowtimesPage() {
                               Precio desde
                             </span>
                             <span className="text-xl font-bold text-yellow-400">
-                              ${showtime.price.toFixed(2)}
+                              S/.{showtime.price.toFixed(2)}
                             </span>
                           </div>
                         </motion.div>
@@ -228,12 +229,7 @@ export default function ShowtimesPage() {
       )}
 
       {/* Footer */}
-      <footer className="bg-gray-800 py-6 mt-12">
-        <div className="container mx-auto px-6 text-center text-gray-400">
-          <p>© 2023 CineMax Premium Experience. Todos los derechos reservados.</p>
-          <p className="text-sm mt-2">Las películas y horarios están sujetos a cambios sin previo aviso.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

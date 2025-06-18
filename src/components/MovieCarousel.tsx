@@ -29,7 +29,7 @@ export default function MovieCarousel({ movie, onPrev, onNext, onSelect }: Props
       }}
     >
       <div className="absolute inset-0 flex items-center">
-        <button onClick={onPrev} className="absolute left-4 bg-black/50 rounded-full p-2 hover:bg-black/70 z-10">
+        <button onClick={onPrev} className="absolute left-4 bg-black/50 rounded-full p-2 hover:bg-black/70 z-10 cursor-pointer">
           <FiChevronLeft className="text-2xl" />
         </button>
 
@@ -45,13 +45,13 @@ export default function MovieCarousel({ movie, onPrev, onNext, onSelect }: Props
               <span className="bg-indigo-600 px-2 py-1 rounded text-sm">{movie.genre}</span>
             </div>
             <p className="text-gray-300 max-w-2xl">{movie.description}</p>
-            <button onClick={() => onSelect(movie.id)} className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition shadow-lg">
+            <button onClick={() => onSelect(movie.id)} className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-2 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition shadow-lg cursor-pointer">
               Ver Horarios
             </button>
           </div>
         </div>
 
-        <button onClick={onNext} className="absolute right-4 bg-black/50 rounded-full p-2 hover:bg-black/70 z-10">
+        <button onClick={onNext} className="absolute right-4 bg-black/50 rounded-full p-2 hover:bg-black/70 z-10 cursor-pointer">
           <FiChevronRight className="text-2xl" />
         </button>
       </div>

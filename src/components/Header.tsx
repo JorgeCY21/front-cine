@@ -75,7 +75,7 @@ const Header = () => {
           <div className="relative">
             <button 
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center space-x-2 focus:outline-none"
+              className="flex items-center space-x-2 focus:outline-none cursor-pointer"
             >
               <div className="h-9 w-9 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center text-white">
                 {user.email ? user.email.charAt(0).toUpperCase() : <FiUser />}
@@ -84,7 +84,7 @@ const Header = () => {
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-700 cursor-pointer">
                 <Link 
                   to="/profile" 
                   className="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition"

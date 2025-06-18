@@ -190,7 +190,7 @@ export default function SeatsPage() {
               <div className="text-right">
                 <p className="text-sm text-gray-300">Total</p>
                 <p className="text-xl font-bold text-yellow-400">
-                  ${calculateTotal().toFixed(2)}
+                  S/.{calculateTotal().toFixed(2)}
                 </p>
               </div>
               
@@ -202,7 +202,7 @@ export default function SeatsPage() {
                 whileTap={selectedSeats.length > 0 ? { scale: 0.97 } : {}}
                 className={`flex items-center px-5 py-2 rounded-lg font-medium transition-all ${
                   selectedSeats.length > 0
-                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg"
+                    ? "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg cursor-pointer"
                     : "bg-gray-700 cursor-not-allowed"
                 }`}
               >
@@ -220,15 +220,15 @@ export default function SeatsPage() {
           <div className="flex flex-wrap justify-center gap-4 text-xs">
             <div className="flex items-center">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-green-500 to-green-600 mr-1"></div>
-              <span>Standard ($9.99)</span>
+              <span>Standard (S/.9.99)</span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-indigo-600 to-purple-600 mr-1"></div>
-              <span>Premium ($12.99)</span>
+              <span>Premium (S/.12.99)</span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-yellow-500 to-yellow-700 mr-1"></div>
-              <span>VIP ($16.99)</span>
+              <span>VIP (S/.16.99)</span>
             </div>
             <div className="flex items-center">
               <div className="w-4 h-4 rounded bg-gray-800 border border-gray-500 mr-1"></div>

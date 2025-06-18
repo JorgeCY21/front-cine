@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiClock, FiMapPin, FiFilm, FiArrowLeft } from "react-icons/fi";
 import { FaTicketAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 type SeatInfo = {
   id: number;
@@ -104,17 +106,39 @@ export default function ConfirmationPage() {
     }, 0);
   };
 
-  const handleFinish = () => {
-    setIsCompleting(true);
-    setTimeout(() => {
-      const audio = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_5ac6c2c8b8.mp3");
-      audio.play();
-      setIsModalOpen(true);
-      setIsCompleting(false);
+  const handleFinish = async () => {
+  setIsCompleting(true);
+
+  setTimeout(async () => {
+    try {
+      const element = document.getElementById("pdf-ticket-summary");
+      
+      const canvas = await html2canvas(element as HTMLElement, {
+        scale: 2,
+        logging: true,
+        backgroundColor: '#ffffff',
+        useCORS: true
+      });
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [80, 120] // Tamaño similar a ticket real
+      });
+
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 80, 120);
+      pdf.save(`CineMax_${showtime?.movieTitle}_Ticket.pdf`);
+
+      // Limpiar y redirigir
       localStorage.removeItem("selectedSeats");
       localStorage.removeItem("showtimeId");
-    }, 2000);
-  };
+      navigate("/movies");
+    } catch (error) {
+      console.error("Error al generar el ticket:", error);
+      setIsCompleting(false);
+    }
+  }, 1000);
+};
 
   const getSeatBadgeColor = (type: string) => {
     switch(type) {
@@ -123,6 +147,18 @@ export default function ConfirmationPage() {
       default: return "bg-gradient-to-br from-green-500 to-green-600";
     }
   };
+
+  // Añade esto en tu componente para cargar la fuente del código de barras
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -139,7 +175,8 @@ export default function ConfirmationPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div id="ticket-summary" className="container mx-auto px-4 py-8 max-w-4xl bg-gray-900 text-white rounded-xl shadow-xl">
+
         {/* Header de éxito */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -307,6 +344,171 @@ export default function ConfirmationPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      
+{/* Ticket premium con diseño atractivo */}
+<div id="pdf-ticket-summary" style={{
+  width: '80mm',
+  padding: '5mm',
+  background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
+  color: '#2d3748',
+  fontFamily: '"Segoe UI", Roboto, sans-serif',
+  border: '1px solid #e2e8f0',
+  borderRadius: '8px',
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  position: 'relative',
+  overflow: 'hidden'
+}}>
+  {/* Banda decorativa superior */}
+  <div style={{
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    right: '0',
+    height: '8px',
+    background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
+  }}></div>
+  
+  {/* Encabezado */}
+  <div style={{ 
+    textAlign: 'center', 
+    marginBottom: '12px',
+    paddingBottom: '8px',
+    borderBottom: '1px dashed #cbd5e0'
+  }}>
+    <div style={{ 
+      fontWeight: '800', 
+      fontSize: '16px',
+      color: '#4a5568',
+      letterSpacing: '1px',
+      marginBottom: '4px'
+    }}>CINEMAX <span style={{ color: '#667eea' }}>PREMIUM</span></div>
+    <div style={{ 
+      fontSize: '8px',
+      color: '#718096',
+      letterSpacing: '0.5px'
+    }}>EXPERIENCE</div>
+  </div>
+  
+  {/* Contenido principal */}
+  <div style={{ 
+    background: 'white',
+    borderRadius: '6px',
+    padding: '10px',
+    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+    marginBottom: '12px'
+  }}>
+    {/* Fila de película */}
+    <div style={{ 
+      display: 'flex',
+      marginBottom: '8px',
+      alignItems: 'center'
+    }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        borderRadius: '4px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '18px',
+        marginRight: '10px',
+        flexShrink: '0'
+      }}>
+        {showtime?.movieTitle.charAt(0)}
+      </div>
+      <div style={{ flexGrow: '1' }}>
+        <div style={{ 
+          fontWeight: '600', 
+          fontSize: '12px',
+          color: '#4a5568'
+        }}>{showtime?.movieTitle}</div>
+        <div style={{ 
+          fontSize: '9px',
+          color: '#718096'
+        }}>{showtime?.format}</div>
+      </div>
+    </div>
+    
+    {/* Detalles */}
+    <div style={{ 
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '8px',
+      fontSize: '10px'
+    }}>
+      <div>
+        <div style={{ color: '#718096', fontSize: '8px' }}>FECHA</div>
+        <div style={{ fontWeight: '500' }}>
+          {new Date(showtime?.startTime || "").toLocaleString('es-ES', { 
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit' 
+          })}
+        </div>
+      </div>
+      <div>
+        <div style={{ color: '#718096', fontSize: '8px' }}>SALA</div>
+        <div style={{ fontWeight: '500' }}>{showtime?.roomName}</div>
+      </div>
+      <div>
+        <div style={{ color: '#718096', fontSize: '8px' }}>ASIENTOS</div>
+        <div style={{ fontWeight: '500' }}>
+          {seats.map(s => `${s.row}${s.seatNumber}`).join(', ')}
+        </div>
+      </div>
+      <div>
+        <div style={{ color: '#718096', fontSize: '8px' }}>TOTAL</div>
+        <div style={{ 
+          fontWeight: '600',
+          color: '#667eea'
+        }}>S/. {calculateTotal().toFixed(2)}</div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Código de barras premium */}
+  <div style={{ 
+    textAlign: 'center',
+    margin: '12px 0',
+    position: 'relative'
+  }}>
+    <div style={{
+      fontFamily: '"Libre Barcode 128", cursive',
+      fontSize: '36px',
+      letterSpacing: '2px',
+      color: '#2d3748',
+      padding: '6px 0',
+      background: 'white',
+      borderRadius: '4px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
+    }}>
+      {`CINEMX${Math.floor(Math.random() * 90000) + 10000}`}
+    </div>
+    <div style={{ 
+      fontSize: '8px',
+      color: '#718096',
+      marginTop: '4px',
+      letterSpacing: '1px'
+    }}>
+      TICKET ID: {Date.now().toString().slice(-8)}
+    </div>
+  </div>
+  
+  {/* Footer */}
+  <div style={{ 
+    textAlign: 'center', 
+    fontSize: '7px',
+    color: '#a0aec0',
+    borderTop: '1px dashed #e2e8f0',
+    paddingTop: '8px'
+  }}>
+    <div>Presentar este ticket en taquilla</div>
+    <div>Válido solo para la función indicada</div>
+    <div style={{ marginTop: '4px' }}>www.cinemax-premium.com</div>
+  </div>
+</div>
 
       {/* Footer */}
       <footer className="bg-black/50 py-6 mt-12 border-t border-gray-800">

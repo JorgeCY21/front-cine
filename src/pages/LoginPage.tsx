@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/user.service"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -8,14 +9,27 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (email && password) {
+    if (!email || !password) return;
+
+    try {
       setIsLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      localStorage.setItem("user", JSON.stringify({ email }));
+
+      const user = await login({ email, password });
+
+      console.log('Usuario autenticado:', user);
+
+      localStorage.setItem("user", JSON.stringify(user));
+
       navigate("/movies");
+
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      alert('Correo o contraseña incorrectos');
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
   return (
     <div className="relative flex items-center justify-center min-h-screen bg-gray-900 overflow-hidden">
@@ -25,7 +39,7 @@ export default function LoginPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
         <div className="absolute bottom-0 left-1/2 w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
       </div>
-      
+
       {/* Film strip decoration */}
       <div className="absolute top-0 left-0 w-full h-8 bg-black/50 flex items-center z-10">
         {[...Array(20)].map((_, i) => (
@@ -49,11 +63,11 @@ export default function LoginPage() {
             <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full animate-pulse"></div>
           </div>
         </div>
-        
+
         <p className="text-sm text-center text-gray-300 mb-8 tracking-wider">
           Ingresa tus credenciales para disfrutar de una gran experiencia
         </p>
-        
+
         {/* Input fields */}
         <div className="space-y-5">
           <div className="relative group">
@@ -65,12 +79,12 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label  htmlFor="email" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300">
+            <label htmlFor="email" className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300">
               Correo electrónico
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
           </div>
-          
+
           <div className="relative group">
             <input
               id="password"
@@ -86,16 +100,15 @@ export default function LoginPage() {
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
           </div>
         </div>
-        
+
         {/* Login button */}
         <button
           onClick={handleLogin}
           disabled={isLoading}
-          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${
-            isLoading 
-              ? 'bg-indigo-700 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
-          }`}
+          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${isLoading
+            ? 'bg-indigo-700 cursor-not-allowed'
+            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
+            }`}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
@@ -109,7 +122,7 @@ export default function LoginPage() {
             'Iniciar Sesión'
           )}
         </button>
-        
+
         {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400">
@@ -126,7 +139,7 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      
+
       {/* Add some movie-themed decorative elements */}
       <div className="absolute bottom-4 right-4 text-gray-500 text-xs flex items-center">
         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">

@@ -345,170 +345,170 @@ export default function ConfirmationPage() {
         )}
       </AnimatePresence>
       
-{/* Ticket premium con diseño atractivo */}
-<div id="pdf-ticket-summary" style={{
-  width: '80mm',
-  padding: '5mm',
-  background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
-  color: '#2d3748',
-  fontFamily: '"Segoe UI", Roboto, sans-serif',
-  border: '1px solid #e2e8f0',
-  borderRadius: '8px',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-  position: 'relative',
-  overflow: 'hidden'
-}}>
-  {/* Banda decorativa superior */}
-  <div style={{
-    position: 'absolute',
-    top: '0',
-    left: '0',
-    right: '0',
-    height: '8px',
-    background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
-  }}></div>
-  
-  {/* Encabezado */}
-  <div style={{ 
-    textAlign: 'center', 
-    marginBottom: '12px',
-    paddingBottom: '8px',
-    borderBottom: '1px dashed #cbd5e0'
-  }}>
-    <div style={{ 
-      fontWeight: '800', 
-      fontSize: '16px',
-      color: '#4a5568',
-      letterSpacing: '1px',
-      marginBottom: '4px'
-    }}>CINEMAX <span style={{ color: '#667eea' }}>PREMIUM</span></div>
-    <div style={{ 
-      fontSize: '8px',
-      color: '#718096',
-      letterSpacing: '0.5px'
-    }}>EXPERIENCE</div>
-  </div>
-  
-  {/* Contenido principal */}
-  <div style={{ 
-    background: 'white',
-    borderRadius: '6px',
-    padding: '10px',
-    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
-    marginBottom: '12px'
-  }}>
-    {/* Fila de película */}
-    <div style={{ 
-      display: 'flex',
-      marginBottom: '8px',
-      alignItems: 'center'
-    }}>
-      <div style={{
-        width: '40px',
-        height: '40px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: '4px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: '18px',
-        marginRight: '10px',
-        flexShrink: '0'
+      {/* Ticket premium con diseño atractivo */}
+      <div id="pdf-ticket-summary" style={{
+        width: '80mm',
+        padding: '5mm',
+        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
+        color: '#2d3748',
+        fontFamily: '"Segoe UI", Roboto, sans-serif',
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        {showtime?.movieTitle.charAt(0)}
-      </div>
-      <div style={{ flexGrow: '1' }}>
+        {/* Banda decorativa superior */}
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          right: '0',
+          height: '8px',
+          background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
+        }}></div>
+        
+        {/* Encabezado */}
         <div style={{ 
-          fontWeight: '600', 
-          fontSize: '12px',
-          color: '#4a5568'
-        }}>{showtime?.movieTitle}</div>
+          textAlign: 'center', 
+          marginBottom: '12px',
+          paddingBottom: '8px',
+          borderBottom: '1px dashed #cbd5e0'
+        }}>
+          <div style={{ 
+            fontWeight: '800', 
+            fontSize: '16px',
+            color: '#4a5568',
+            letterSpacing: '1px',
+            marginBottom: '4px'
+          }}>CINEMAX <span style={{ color: '#667eea' }}>PREMIUM</span></div>
+          <div style={{ 
+            fontSize: '8px',
+            color: '#718096',
+            letterSpacing: '0.5px'
+          }}>EXPERIENCE</div>
+        </div>
+        
+        {/* Contenido principal */}
         <div style={{ 
-          fontSize: '9px',
-          color: '#718096'
-        }}>{showtime?.format}</div>
-      </div>
-    </div>
-    
-    {/* Detalles */}
-    <div style={{ 
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '8px',
-      fontSize: '10px'
-    }}>
-      <div>
-        <div style={{ color: '#718096', fontSize: '8px' }}>FECHA</div>
-        <div style={{ fontWeight: '500' }}>
-          {new Date(showtime?.startTime || "").toLocaleString('es-ES', { 
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit' 
-          })}
+          background: 'white',
+          borderRadius: '6px',
+          padding: '10px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+          marginBottom: '12px'
+        }}>
+          {/* Fila de película */}
+          <div style={{ 
+            display: 'flex',
+            marginBottom: '8px',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '18px',
+              marginRight: '10px',
+              flexShrink: '0'
+            }}>
+              {showtime?.movieTitle.charAt(0)}
+            </div>
+            <div style={{ flexGrow: '1' }}>
+              <div style={{ 
+                fontWeight: '600', 
+                fontSize: '12px',
+                color: '#4a5568'
+              }}>{showtime?.movieTitle}</div>
+              <div style={{ 
+                fontSize: '9px',
+                color: '#718096'
+              }}>{showtime?.format}</div>
+            </div>
+          </div>
+          
+          {/* Detalles */}
+          <div style={{ 
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '8px',
+            fontSize: '10px'
+          }}>
+            <div>
+              <div style={{ color: '#718096', fontSize: '8px' }}>FECHA</div>
+              <div style={{ fontWeight: '500' }}>
+                {new Date(showtime?.startTime || "").toLocaleString('es-ES', { 
+                  day: '2-digit', month: '2-digit', year: 'numeric',
+                  hour: '2-digit', minute: '2-digit' 
+                })}
+              </div>
+            </div>
+            <div>
+              <div style={{ color: '#718096', fontSize: '8px' }}>SALA</div>
+              <div style={{ fontWeight: '500' }}>{showtime?.roomName}</div>
+            </div>
+            <div>
+              <div style={{ color: '#718096', fontSize: '8px' }}>ASIENTOS</div>
+              <div style={{ fontWeight: '500' }}>
+                {seats.map(s => `${s.row}${s.seatNumber}`).join(', ')}
+              </div>
+            </div>
+            <div>
+              <div style={{ color: '#718096', fontSize: '8px' }}>TOTAL</div>
+              <div style={{ 
+                fontWeight: '600',
+                color: '#667eea'
+              }}>S/. {calculateTotal().toFixed(2)}</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Código de barras premium */}
+        <div style={{ 
+          textAlign: 'center',
+          margin: '12px 0',
+          position: 'relative'
+        }}>
+          <div style={{
+            fontFamily: '"Libre Barcode 128", cursive',
+            fontSize: '36px',
+            letterSpacing: '2px',
+            color: '#2d3748',
+            padding: '6px 0',
+            background: 'white',
+            borderRadius: '4px',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
+          }}>
+            {`CINEMX${Math.floor(Math.random() * 90000) + 10000}`}
+          </div>
+          <div style={{ 
+            fontSize: '8px',
+            color: '#718096',
+            marginTop: '4px',
+            letterSpacing: '1px'
+          }}>
+            TICKET ID: {Date.now().toString().slice(-8)}
+          </div>
+        </div>
+        
+        {/* Footer */}
+        <div style={{ 
+          textAlign: 'center', 
+          fontSize: '7px',
+          color: '#a0aec0',
+          borderTop: '1px dashed #e2e8f0',
+          paddingTop: '8px'
+        }}>
+          <div>Presentar este ticket en taquilla</div>
+          <div>Válido solo para la función indicada</div>
+          <div style={{ marginTop: '4px' }}>www.cinemax-premium.com</div>
         </div>
       </div>
-      <div>
-        <div style={{ color: '#718096', fontSize: '8px' }}>SALA</div>
-        <div style={{ fontWeight: '500' }}>{showtime?.roomName}</div>
-      </div>
-      <div>
-        <div style={{ color: '#718096', fontSize: '8px' }}>ASIENTOS</div>
-        <div style={{ fontWeight: '500' }}>
-          {seats.map(s => `${s.row}${s.seatNumber}`).join(', ')}
-        </div>
-      </div>
-      <div>
-        <div style={{ color: '#718096', fontSize: '8px' }}>TOTAL</div>
-        <div style={{ 
-          fontWeight: '600',
-          color: '#667eea'
-        }}>S/. {calculateTotal().toFixed(2)}</div>
-      </div>
-    </div>
-  </div>
-  
-  {/* Código de barras premium */}
-  <div style={{ 
-    textAlign: 'center',
-    margin: '12px 0',
-    position: 'relative'
-  }}>
-    <div style={{
-      fontFamily: '"Libre Barcode 128", cursive',
-      fontSize: '36px',
-      letterSpacing: '2px',
-      color: '#2d3748',
-      padding: '6px 0',
-      background: 'white',
-      borderRadius: '4px',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)'
-    }}>
-      {`CINEMX${Math.floor(Math.random() * 90000) + 10000}`}
-    </div>
-    <div style={{ 
-      fontSize: '8px',
-      color: '#718096',
-      marginTop: '4px',
-      letterSpacing: '1px'
-    }}>
-      TICKET ID: {Date.now().toString().slice(-8)}
-    </div>
-  </div>
-  
-  {/* Footer */}
-  <div style={{ 
-    textAlign: 'center', 
-    fontSize: '7px',
-    color: '#a0aec0',
-    borderTop: '1px dashed #e2e8f0',
-    paddingTop: '8px'
-  }}>
-    <div>Presentar este ticket en taquilla</div>
-    <div>Válido solo para la función indicada</div>
-    <div style={{ marginTop: '4px' }}>www.cinemax-premium.com</div>
-  </div>
-</div>
 
       {/* Footer */}
       <footer className="bg-black/50 py-6 mt-12 border-t border-gray-800">

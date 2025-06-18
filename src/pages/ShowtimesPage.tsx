@@ -64,7 +64,7 @@ export default function ShowtimesPage() {
       { id: 5, movieId: 1, roomName: "Sala Premium", startTime: "2025-06-19T18:30:00", format: "4K Dolby Atmos", price: 14.99, seatsAvailable: 28 },
       { id: 6, movieId: 1, roomName: "Sala VIP", startTime: "2025-06-19T21:45:00", format: "4K Luxury", price: 19.99, seatsAvailable: 24 },
     ];
-
+    
     const currentMovie = mockMovies.find(m => m.id === Number(movieId));
     setMovie(currentMovie || null);
 
@@ -114,59 +114,76 @@ export default function ShowtimesPage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <header className="bg-gray-800 py-4 px-6 shadow-lg">
+      {/* Header simplificado */}
+      <header className="bg-gray-800 py-3 px-4 sm:py-4 sm:px-6 shadow-lg sticky top-0 z-10">
         <div className="container mx-auto flex items-center">
           <button 
             onClick={() => navigate(-1)}
-            className="mr-4 p-2 rounded-full hover:bg-gray-700 transition"
+            className="mr-2 sm:mr-4 p-1 sm:p-2 rounded-full hover:bg-gray-700 transition"
+            aria-label="Volver"
           >
-            <FiChevronLeft className="text-xl" />
+            <FiChevronLeft className="text-lg sm:text-xl" />
           </button>
-          <h1 className="text-2xl font-bold">CineMax Premium</h1>
+          <h1 className="text-xl sm:text-2xl font-bold truncate max-w-[70vw] sm:max-w-none">
+            {movie?.title || "CineMax Premium"}
+          </h1>
         </div>
       </header>
 
       {/* Movie Info Section */}
       {movie && (
-        <div className="container mx-auto px-6 py-8 flex flex-col md:flex-row items-start">
-          <div className="md:w-1/4 mb-6 md:mb-0 md:pr-8">
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row items-start gap-6">
+          {/* Poster - Solo en desktop o en versión vertical en móviles */}
+          <div className="w-full lg:w-1/4 flex justify-center lg:justify-start lg:pr-8">
             <img 
               src={movie.posterUrl} 
               alt={movie.title}
-              className="rounded-lg shadow-xl w-full max-w-xs"
+              className="rounded-lg shadow-xl w-full max-w-[200px] sm:max-w-xs lg:max-w-full"
             />
           </div>
-          <div className="md:w-3/4">
-            <h2 className="text-3xl font-bold mb-2">{movie.title}</h2>
-            <div className="flex items-center space-x-4 mb-4">
-              <span className="text-gray-400">{movie.genre}</span>
-              <span className="flex items-center text-gray-400">
-                <FiClock className="mr-1" /> {Math.floor(movie.duration / 60)}h {movie.duration % 60}m
-              </span>
+
+          {/* Showtimes Content */}
+          <div className="w-full lg:w-3/4">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">{movie.title}</h2>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm sm:text-base">
+                <span className="text-gray-400">{movie.genre}</span>
+                <span className="flex items-center text-gray-400">
+                  <FiClock className="mr-1" /> {Math.floor(movie.duration / 60)}h {movie.duration % 60}m
+                </span>
+              </div>
             </div>
-            <div className="bg-gray-800/50 p-4 rounded-lg mb-6">
-              <h3 className="text-xl font-semibold mb-3 text-indigo-400">Selecciona una fecha y función</h3>
+
+            <div className="bg-gray-800/50 p-3 sm:p-4 rounded-lg">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 text-indigo-400">
+                Selecciona una fecha y función
+              </h3>
               
-              {/* Date Selector */}
-              <div className="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
-                {getDatesForWeek().map((date, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedDate(date)}
-                    className={`flex flex-col items-center justify-center px-4 py-2 mx-1 rounded-lg min-w-16 transition cursor-pointer ${date.toDateString() === selectedDate.toDateString() ? 'bg-indigo-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                  >
-                    <span className="text-sm font-medium">
-                      {date.toLocaleDateString([], { weekday: 'short' })}
-                    </span>
-                    <span className="text-lg font-bold">
-                      {date.getDate()}
-                    </span>
-                  </button>
-                ))}
+              {/* Date Selector - Scroll horizontal en móviles */}
+              <div className="flex overflow-x-auto pb-3 mb-4 sm:mb-6 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+                <div className="flex space-x-2 sm:space-x-3">
+                  {getDatesForWeek().map((date, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedDate(date)}
+                      className={`flex flex-col items-center justify-center px-3 py-2 sm:px-4 sm:py-2 rounded-lg min-w-[60px] sm:min-w-[70px] transition cursor-pointer ${
+                        date.toDateString() === selectedDate.toDateString() 
+                          ? 'bg-indigo-600' 
+                          : 'bg-gray-700 hover:bg-gray-600'
+                      }`}
+                    >
+                      <span className="text-xs sm:text-sm font-medium">
+                        {date.toLocaleDateString([], { weekday: 'short' })}
+                      </span>
+                      <span className="text-base sm:text-lg font-bold">
+                        {date.getDate()}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Showtimes */}
+              {/* Showtimes Grid */}
               {Object.entries(groupedShowtimes).map(([date, showtimesForDate]) => {
                 const showDate = new Date(date);
                 if (showDate.toDateString() !== selectedDate.toDateString()) return null;
@@ -179,29 +196,29 @@ export default function ShowtimesPage() {
                     transition={{ duration: 0.3 }}
                     className="space-y-4"
                   >
-                    <h4 className="text-xl font-semibold flex items-center">
+                    <h4 className="text-lg sm:text-xl font-semibold flex items-center">
                       <FiCalendar className="mr-2 text-indigo-400" />
                       {formatDay(date)}
                     </h4>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       {showtimesForDate.map(showtime => (
                         <motion.div
                           key={showtime.id}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleSelect(showtime.id)}
-                          className="bg-gray-700 rounded-xl p-4 cursor-pointer border border-gray-600 hover:border-indigo-500 transition group"
+                          className="bg-gray-700 rounded-lg sm:rounded-xl p-3 sm:p-4 cursor-pointer border border-gray-600 hover:border-indigo-500 transition group"
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <h5 className="text-lg font-bold group-hover:text-indigo-400 transition">
+                            <h5 className="text-base sm:text-lg font-bold group-hover:text-indigo-400 transition truncate max-w-[70%]">
                               {showtime.roomName}
                             </h5>
-                            <span className="bg-indigo-600 text-xs px-2 py-1 rounded-full">
+                            <span className="bg-indigo-600 text-xs px-2 py-1 rounded-full whitespace-nowrap">
                               {showtime.format}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-4 mb-3">
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm mb-2 sm:mb-3">
                             <span className="flex items-center text-gray-300">
                               <FiClock className="mr-1" /> {formatTime(showtime.startTime)}
                             </span>
@@ -210,10 +227,10 @@ export default function ShowtimesPage() {
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">
+                            <span className="text-gray-400 text-xs sm:text-sm">
                               Precio desde
                             </span>
-                            <span className="text-xl font-bold text-yellow-400">
+                            <span className="text-lg sm:text-xl font-bold text-yellow-400">
                               S/.{showtime.price.toFixed(2)}
                             </span>
                           </div>

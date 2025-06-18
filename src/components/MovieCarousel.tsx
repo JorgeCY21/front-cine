@@ -21,7 +21,7 @@ interface Props {
 export default function MovieCarousel({ movie, onPrev, onNext, onSelect }: Props) {
   return (
     <div 
-      className="relative h-96 w-full overflow-hidden"
+      className="relative h-120 w-full overflow-hidden"
       style={{
         backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8)), url(${movie.backdropUrl})`,
         backgroundSize: 'cover',

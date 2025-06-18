@@ -24,7 +24,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate('/');
   };
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');

@@ -158,7 +158,7 @@ export default function MoviesPage() {
       )}
 
       {/* Movies Grid */}
-      <main className="container mx-auto px-6 py-12 flex-grow">
+      <main className="pt-24 px-6 bg-gray-950 min-h-screen text-white">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Películas en Cartelera</h2>
           <div className="flex space-x-2">

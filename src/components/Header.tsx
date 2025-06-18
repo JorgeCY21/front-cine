@@ -30,7 +30,7 @@ const Header = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   return (
-    <header className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 backdrop-blur-md py-2 shadow-xl' : 'bg-gradient-to-b from-gray-900/80 to-transparent py-4'}`}>
+   <header className={`sticky top-0 w-full z-40 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 backdrop-blur-md py-2 shadow-xl' : 'bg-gradient-to-b from-gray-900/80 to-transparent py-4'}`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         {/* Logo y navegación */}
         <div className="flex items-center space-x-10">

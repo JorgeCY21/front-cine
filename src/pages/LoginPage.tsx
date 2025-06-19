@@ -78,8 +78,8 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
             />
-            <label 
-              htmlFor="email" 
+            <label
+              htmlFor="email"
               className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300"
             >
               Correo electrónico
@@ -96,8 +96,8 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer pr-10"
             />
-            <label 
-              htmlFor="password" 
+            <label
+              htmlFor="password"
               className="absolute left-3 -top-3.5 text-gray-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-gray-400 peer-focus:text-sm group-hover:text-indigo-300"
             >
               Contraseña
@@ -117,18 +117,17 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={isLoading}
-          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${
-            isLoading
-              ? 'bg-indigo-700 cursor-not-allowed'
-              : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
-          }`}
+          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${isLoading
+            ? 'bg-indigo-700 cursor-not-allowed'
+            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
+            }`}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">
-              <svg 
-                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
-                xmlns="http://www.w3.org/2000/svg" 
-                fill="none" 
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
                 viewBox="0 0 24 24"
               >
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -159,19 +158,19 @@ export default function LoginPage() {
       </div>
 
       {/* Widget QR para móvil - Versión grande */}
-      <div className="absolute bottom-6 left-6 bg-gray-800/95 p-4 rounded-xl border-2 border-indigo-500/40 flex flex-col items-center z-20 shadow-xl">
+      <div className="hidden md:block absolute bottom-6 left-6 bg-gray-800/95 p-4 rounded-xl border-2 border-indigo-500/40 flex flex-col items-center z-20 shadow-xl">
         <div className="mb-3 text-sm font-medium text-center text-gray-200 max-w-[160px]">
           Escanea para ingresar desde tu móvil
         </div>
         <div className="p-3 bg-white rounded-lg shadow-inner">
-          <QRCode 
-            value={qrValue} 
+          <QRCode
+            value={qrValue}
             size={120}  // Tamaño aumentado de 80 a 120
             level="H"
             fgColor="#2d3748"
             bgColor="transparent"
           />
-        </div>
+        </div>                
         <div className="mt-3 text-xs text-gray-300 text-center font-mono bg-gray-900/50 px-2 py-1 rounded">
           {apiUrl.replace(/^https?:\/\//, '')}
         </div>

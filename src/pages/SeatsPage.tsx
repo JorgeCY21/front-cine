@@ -171,7 +171,7 @@ export default function SeatsPage() {
                   selectedSeats.includes(seat.id) ? (
                     <FiCheck className="text-white text-xs sm:text-sm" />
                   ) : (
-                    <span className="text-white font-medium hidden sm:inline">{seat.row}-{seat.seat_number}</span>
+                    <span className="text-white font-medium text-[8px] sm:text-xs">{seat.row}-{seat.seat_number}</span>
                   )
                 ) : (
                   <FiX className="text-gray-500 text-xs sm:text-sm" />

@@ -18,6 +18,7 @@ type Movie = {
   trailerUrl: string;
 };
 
+
 // Mover fuera del componente para no recrearlo en cada render
 const mockMovies: Movie[] = [
   {

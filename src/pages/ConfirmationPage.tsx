@@ -6,100 +6,94 @@ import { motion, AnimatePresence } from "framer-motion";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Footer from "../components/Footer";
-
-type SeatInfo = {
-  id: number;
-  seatNumber: number;
-  row: string;
-  type: "standard" | "premium" | "vip";
-};
-
-type ShowtimeInfo = {
-  id: number;
-  movieTitle: string;
-  roomName: string;
-  startTime: string;
-  format: string;
-  posterUrl: string;
-};
+import { getShowtimeById } from "../services/showtimes.service";
+import { SeatDto } from "../dto/seat.dto";
+import { ShowtimeDto } from "../dto/showtime.dto";
+import { buyTickets } from "../services/tickets.service";
+import { TicKetBuy } from "../dto/ticketBuy.dto";
 
 export default function ConfirmationPage() {
   const navigate = useNavigate();
-  const [seats, setSeats] = useState<SeatInfo[]>([]);
-  const [showtime, setShowtime] = useState<ShowtimeInfo | null>(null);
+  const [user, setUser] = useState<{ id: number } | null>(null);
+  const [seats, setSeats] = useState<SeatDto[]>([]);
+  const [showtime, setShowtime] = useState<ShowtimeDto | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    const storedSeats = JSON.parse(localStorage.getItem("selectedSeats") || "[]") as number[];
-    const storedShowtimeId = localStorage.getItem("showtimeId");
+    const fetchData = async () => {
+      const storedSeats = JSON.parse(localStorage.getItem("selectedSeats") || "[]") as number[];
+      const storedShowtimeId = localStorage.getItem("showtimeId");
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      setUser(user)
 
-    if (!storedShowtimeId || storedSeats.length === 0) {
-      navigate("/movies");
-      return;
-    }
-
-    const mockShowtimes: ShowtimeInfo[] = [
-      {
-        id: 1,
-        movieTitle: "Interstellar",
-        roomName: "Sala IMAX",
-        startTime: "2025-06-18T19:30:00",
-        format: "IMAX 3D",
-        posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
-      },
-      {
-        id: 2,
-        movieTitle: "Inception",
-        roomName: "Sala Premium",
-        startTime: "2025-06-18T21:00:00",
-        format: "4K Dolby Atmos",
-        posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg"
-      },
-      {
-        id: 3,
-        movieTitle: "The Dark Knight",
-        roomName: "Sala VIP",
-        startTime: "2025-06-19T20:00:00",
-        format: "4K Luxury",
-        posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg"
+      if (!storedShowtimeId || storedSeats.length === 0) {
+        navigate("/movies");
+        return;
       }
-    ];
 
-    const foundShowtime = mockShowtimes.find(
-      (s) => s.id === Number(storedShowtimeId)
-    );
-    if (!foundShowtime) {
-      navigate("/movies");
-      return;
+      const foundShowtime = await getShowtimeById(storedShowtimeId)
+      if (!foundShowtime) {
+        navigate("/movies");
+        return;
+      }
+      setShowtime(foundShowtime);
+
+      const allSeats: SeatDto[] = generateSeats(foundShowtime);
+
+      const selectedSeatObjects = allSeats.filter(seat =>
+        storedSeats.includes(seat.id)
+      );
+      setSeats(selectedSeatObjects);
     }
-    setShowtime(foundShowtime);
+    fetchData();
+  }, [navigate]);
 
-    const allSeats: SeatInfo[] = [];
-    const rows = ["A", "B", "C", "D", "E"];
-    const seatTypes: ("standard" | "premium" | "vip")[] = ["standard", "standard", "premium", "premium", "vip"];
+  function generateSeats(showtime: ShowtimeDto): SeatDto[] {
+    const capacity = showtime.room.capacity;
+    const seatsPerRow = 10;
+    const numRows = capacity / seatsPerRow;
 
-    for (let row = 0; row < rows.length; row++) {
-      for (let num = 1; num <= 10; num++) {
-        const id = row * 10 + num;
-        allSeats.push({ 
-          id, 
-          seatNumber: num, 
-          row: rows[row],
-          type: seatTypes[row]
+    const rows: string[] = Array.from({ length: numRows }, (_, i) =>
+      String.fromCharCode(65 + i)
+    );
+
+    const seatTypes: ("standard" | "premium" | "vip")[] = ["standard", "premium", "vip"];
+    const prices = { standard: 9.99, premium: 12.99, vip: 16.99 };
+
+    // Repartir tipos de asiento por fila
+    const typePerRow: ("standard" | "premium" | "vip")[] = [];
+    const base = Math.floor(numRows / seatTypes.length);
+    const remainder = numRows % seatTypes.length;
+
+    for (let i = 0; i < seatTypes.length; i++) {
+      const count = base + (i < remainder ? 1 : 0);
+      for (let j = 0; j < count; j++) {
+        typePerRow.push(seatTypes[i]);
+      }
+    }
+
+    const seats: SeatDto[] = [];
+
+    rows.forEach((rowLetter, rowIndex) => {
+      for (let num = 1; num <= seatsPerRow; num++) {
+        seats.push({
+          id: rowIndex * seatsPerRow + num,
+          seat_number: num,
+          row: rowLetter,
+          available: false,
+          type: typePerRow[rowIndex],
+          price: prices[typePerRow[rowIndex]],
         });
       }
-    }
+    });
 
-    const selectedSeatObjects = allSeats.filter((seat) =>
-      storedSeats.includes(seat.id)
-    );
-    setSeats(selectedSeatObjects);
-  }, [navigate]);
+    return seats;
+  }
 
   const calculateTotal = () => {
     return seats.reduce((total, seat) => {
-      switch(seat.type) {
+      switch (seat.type) {
         case "vip": return total + 16.99;
         case "premium": return total + 12.99;
         default: return total + 9.99;
@@ -108,54 +102,79 @@ export default function ConfirmationPage() {
   };
 
   const handleFinish = async () => {
-  setIsCompleting(true);
+    setIsCompleting(true);
 
-  setTimeout(async () => {
+    if (!user) return;
+
+    const ticketBuy: TicKetBuy[] = seats.map(s => ({
+      user_id: user?.id ?? 1,
+      showtime_id: showtime?.id ?? 1,
+      seat_number: s.seat_number ?? 1,
+      row: s.row ?? 'A'
+    }));
+
     try {
-      const element = document.getElementById("pdf-ticket-summary");
-      
-      const canvas = await html2canvas(element as HTMLElement, {
-        scale: 2,
-        logging: true,
-        backgroundColor: '#ffffff',
-        useCORS: true
-      });
+      // Intentar comprar tickets
+      await buyTickets(ticketBuy);
 
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: [80, 120] // Tamaño similar a ticket real
-      });
+      // Si la compra fue exitosa, generar el PDF
+      setTimeout(async () => {
+        try {
+          const element = document.getElementById("pdf-ticket-summary");
 
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 80, 120);
-      pdf.save(`CineMax_${showtime?.movieTitle}_Ticket.pdf`);
+          const canvas = await html2canvas(element as HTMLElement, {
+            scale: 2,
+            logging: true,
+            backgroundColor: '#ffffff',
+            useCORS: true
+          });
 
-      // Limpiar y redirigir
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [80, 120]
+          });
+
+          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 80, 120);
+          pdf.save(`CineMax_${showtime?.movie.title}_Ticket.pdf`);
+
+          // Limpiar y redirigir
+          localStorage.removeItem("selectedSeats");
+          localStorage.removeItem("showtimeId");
+          navigate("/movies");
+        } catch (error) {
+          console.error("Error al generar el ticket:", error);
+          setIsCompleting(false);
+        }
+      }, 1000);
+
+    } catch (error: unknown) {
+      console.error("Error comprando tickets:", error);
+
+      // Mostrar alerta clara al usuario
+      alert(error?.response?.data?.message || "No se pudo completar la compra. Intente nuevamente.");
+
+      // Limpiar y redirigir a seleccionar asientos otra vez
       localStorage.removeItem("selectedSeats");
-      localStorage.removeItem("showtimeId");
-      navigate("/movies");
-    } catch (error) {
-      console.error("Error al generar el ticket:", error);
+      navigate(`/showtimes/${showtime?.id}`);
       setIsCompleting(false);
     }
-  }, 1000);
-};
+  };
 
   const getSeatBadgeColor = (type: string) => {
-    switch(type) {
+    switch (type) {
       case "vip": return "bg-gradient-to-br from-yellow-500 to-yellow-600";
       case "premium": return "bg-gradient-to-br from-indigo-500 to-purple-600";
       default: return "bg-gradient-to-br from-green-500 to-green-600";
     }
   };
 
-  // Añade esto en tu componente para cargar la fuente del código de barras
   useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
-    
+
     return () => {
       document.head.removeChild(link);
     };
@@ -165,7 +184,7 @@ export default function ConfirmationPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <header className="bg-black/50 backdrop-blur-md py-4 px-6 shadow-lg sticky top-0 z-10">
         <div className="container mx-auto flex justify-between items-center">
-          <button 
+          <button
             onClick={() => navigate(-1)}
             className="flex items-center text-indigo-400 hover:text-indigo-300 transition  cursor-pointer"
           >
@@ -179,7 +198,7 @@ export default function ConfirmationPage() {
       <div id="ticket-summary" className="container mx-auto px-4 py-8 max-w-4xl bg-gray-900 text-white rounded-xl shadow-xl">
 
         {/* Header de éxito */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -202,21 +221,21 @@ export default function ConfirmationPage() {
           >
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/3">
-                <img 
-                  src={showtime.posterUrl} 
-                  alt={showtime.movieTitle}
+                <img
+                  src={showtime.movie.url_poster}
+                  alt={showtime.movie.title}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="md:w-2/3 p-6">
-                <h3 className="text-2xl font-bold mb-2">{showtime.movieTitle}</h3>
+                <h3 className="text-2xl font-bold mb-2">{showtime.movie.title}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div className="flex items-start">
                     <FiClock className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Fecha y Hora</p>
                       <p className="font-medium">
-                        {new Date(showtime.startTime).toLocaleDateString('es-ES', { 
+                        {new Date(showtime.start_time).toLocaleDateString('es-ES', {
                           weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
                         })}
                       </p>
@@ -226,7 +245,7 @@ export default function ConfirmationPage() {
                     <FiMapPin className="text-indigo-400 mt-1 mr-3" />
                     <div>
                       <p className="text-gray-400 text-sm">Sala</p>
-                      <p className="font-medium">{showtime.roomName}</p>
+                      <p className="font-medium">{showtime.room.name}</p>
                     </div>
                   </div>
                   <div className="flex items-start">
@@ -267,7 +286,7 @@ export default function ConfirmationPage() {
                 whileHover={{ scale: 1.05 }}
                 className={`px-4 py-2 rounded-full text-white font-medium flex items-center ${getSeatBadgeColor(seat.type)}`}
               >
-                {seat.row}-{seat.seatNumber}
+                {seat.row}-{seat.seat_number}
                 <span className="ml-2 text-xs opacity-80">
                   {seat.type === "vip" ? "VIP" : seat.type === "premium" ? "Premium" : "Standard"}
                 </span>
@@ -292,11 +311,10 @@ export default function ConfirmationPage() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             disabled={isCompleting}
-            className={`relative px-8 py-4 rounded-xl font-bold text-lg shadow-lg w-full max-w-md mx-auto cursor-pointer ${
-              isCompleting 
-                ? "bg-indigo-700 cursor-not-allowed" 
-                : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-            }`}
+            className={`relative px-8 py-4 rounded-xl font-bold text-lg shadow-lg w-full max-w-md mx-auto cursor-pointer ${isCompleting
+              ? "bg-indigo-700 cursor-not-allowed"
+              : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+              }`}
           >
             {isCompleting ? (
               <div className="flex items-center justify-center">
@@ -317,13 +335,13 @@ export default function ConfirmationPage() {
       {/* MODAL */}
       <AnimatePresence>
         {isModalOpen && (
-          <motion.div 
+          <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div 
+            <motion.div
               className="bg-gray-900 text-white rounded-xl p-8 max-w-md w-full text-center border border-gray-700 shadow-2xl"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
@@ -345,10 +363,10 @@ export default function ConfirmationPage() {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Ticket premium con diseño atractivo */}
-      <div 
-        id="pdf-ticket-summary" 
+      <div
+        id="pdf-ticket-summary"
         style={{
           position: 'absolute',
           left: '-9999px', // Mueve el elemento fuera del viewport
@@ -375,30 +393,30 @@ export default function ConfirmationPage() {
           height: '8px',
           background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)'
         }}></div>
-        
+
         {/* Encabezado */}
-        <div style={{ 
-          textAlign: 'center', 
+        <div style={{
+          textAlign: 'center',
           marginBottom: '12px',
           paddingBottom: '8px',
           borderBottom: '1px dashed #cbd5e0'
         }}>
-          <div style={{ 
-            fontWeight: '800', 
+          <div style={{
+            fontWeight: '800',
             fontSize: '16px',
             color: '#4a5568',
             letterSpacing: '1px',
             marginBottom: '4px'
           }}>CINEMAX <span style={{ color: '#667eea' }}>PREMIUM</span></div>
-          <div style={{ 
+          <div style={{
             fontSize: '8px',
             color: '#718096',
             letterSpacing: '0.5px'
           }}>EXPERIENCE</div>
         </div>
-        
+
         {/* Contenido principal */}
-        <div style={{ 
+        <div style={{
           background: 'white',
           borderRadius: '6px',
           padding: '10px',
@@ -406,7 +424,7 @@ export default function ConfirmationPage() {
           marginBottom: '12px'
         }}>
           {/* Fila de película */}
-          <div style={{ 
+          <div style={{
             display: 'flex',
             marginBottom: '8px',
             alignItems: 'center'
@@ -425,23 +443,23 @@ export default function ConfirmationPage() {
               marginRight: '10px',
               flexShrink: '0'
             }}>
-              {showtime?.movieTitle.charAt(0)}
+              {showtime?.movie.title.charAt(0)}
             </div>
             <div style={{ flexGrow: '1' }}>
-              <div style={{ 
-                fontWeight: '600', 
+              <div style={{
+                fontWeight: '600',
                 fontSize: '12px',
                 color: '#4a5568'
-              }}>{showtime?.movieTitle}</div>
-              <div style={{ 
+              }}>{showtime?.movie.title}</div>
+              <div style={{
                 fontSize: '9px',
                 color: '#718096'
               }}>{showtime?.format}</div>
             </div>
           </div>
-          
+
           {/* Detalles */}
-          <div style={{ 
+          <div style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '8px',
@@ -450,34 +468,34 @@ export default function ConfirmationPage() {
             <div>
               <div style={{ color: '#718096', fontSize: '8px' }}>FECHA</div>
               <div style={{ fontWeight: '500' }}>
-                {new Date(showtime?.startTime || "").toLocaleString('es-ES', { 
+                {new Date(showtime?.start_time || "").toLocaleString('es-ES', {
                   day: '2-digit', month: '2-digit', year: 'numeric',
-                  hour: '2-digit', minute: '2-digit' 
+                  hour: '2-digit', minute: '2-digit'
                 })}
               </div>
             </div>
             <div>
               <div style={{ color: '#718096', fontSize: '8px' }}>SALA</div>
-              <div style={{ fontWeight: '500' }}>{showtime?.roomName}</div>
+              <div style={{ fontWeight: '500' }}>{showtime?.room.name}</div>
             </div>
             <div>
               <div style={{ color: '#718096', fontSize: '8px' }}>ASIENTOS</div>
               <div style={{ fontWeight: '500' }}>
-                {seats.map(s => `${s.row}${s.seatNumber}`).join(', ')}
+                {seats.map(s => `${s.row}${s.seat_number}`).join(', ')}
               </div>
             </div>
             <div>
               <div style={{ color: '#718096', fontSize: '8px' }}>TOTAL</div>
-              <div style={{ 
+              <div style={{
                 fontWeight: '600',
                 color: '#667eea'
               }}>S/. {calculateTotal().toFixed(2)}</div>
             </div>
           </div>
         </div>
-        
+
         {/* Código de barras premium */}
-        <div style={{ 
+        <div style={{
           textAlign: 'center',
           margin: '12px 0',
           position: 'relative'
@@ -494,7 +512,7 @@ export default function ConfirmationPage() {
           }}>
             {`CINEMX${Math.floor(Math.random() * 90000) + 10000}`}
           </div>
-          <div style={{ 
+          <div style={{
             fontSize: '8px',
             color: '#718096',
             marginTop: '4px',
@@ -503,10 +521,10 @@ export default function ConfirmationPage() {
             TICKET ID: {Date.now().toString().slice(-8)}
           </div>
         </div>
-        
+
         {/* Footer */}
-        <div style={{ 
-          textAlign: 'center', 
+        <div style={{
+          textAlign: 'center',
           fontSize: '7px',
           color: '#a0aec0',
           borderTop: '1px dashed #e2e8f0',

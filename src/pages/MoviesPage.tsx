@@ -73,20 +73,20 @@ export default function MoviesPage() {
             <h2 className="text-2xl sm:text-3xl font-bold">Películas en Cartelera</h2>
 
             <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition whitespace-nowrap">
+              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition whitespace-nowrap cursor-pointer">
                 Estrenos
               </button>
-              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition whitespace-nowrap">
+              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition whitespace-nowrap cursor-pointer">
                 Próximamente
               </button>
-              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-indigo-600 rounded-lg hover:bg-indigo-700 transition whitespace-nowrap">
+              <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-indigo-600 rounded-lg hover:bg-indigo-700 transition whitespace-nowrap cursor-pointer">
                 Todas
               </button>
             </div>
           </div>
 
           {/* Movies Grid */}
-          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 mb-10">
             {movies.map((movie) => (
               <MovieCard
                 key={movie.id}

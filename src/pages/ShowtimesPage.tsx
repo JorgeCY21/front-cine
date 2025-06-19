@@ -85,7 +85,7 @@ export default function ShowtimesPage() {
         <div className="container mx-auto flex items-center">
           <button
             onClick={() => navigate(-1)}
-            className="mr-2 sm:mr-4 p-1 sm:p-2 rounded-full hover:bg-gray-700 transition"
+            className="mr-2 sm:mr-4 p-1 sm:p-2 rounded-full hover:bg-gray-700 transition cursor-pointer"
             aria-label="Volver"
           >
             <FiChevronLeft className="text-lg sm:text-xl" />

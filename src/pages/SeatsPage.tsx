@@ -98,7 +98,7 @@ export default function SeatsPage() {
         <div className="container mx-auto flex justify-between items-center">
           <button 
             onClick={() => navigate(-1)}
-            className="flex items-center text-indigo-400 hover:text-indigo-300 transition text-sm sm:text-base"
+            className="flex items-center text-indigo-400 hover:text-indigo-300 transition text-sm sm:text-base cursor-pointer"
           >
             <FiArrowLeft className="mr-1 sm:mr-2" /> 
             <span className="hidden xs:inline">Volver</span>

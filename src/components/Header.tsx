@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FiSearch, FiBell, FiUser, FiLogOut, FiStar, FiClock, FiMenu, FiX } from 'react-icons/fi';
+import { FiSearch, FiBell, FiUser, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
 import { FaTicketAlt } from 'react-icons/fa';
 
 const Header = () => {
@@ -12,13 +12,8 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 10);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -42,7 +37,7 @@ const Header = () => {
             >
               {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
-            
+
             <Link to="/" className="flex items-center">
               <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
                 CineMax
@@ -65,16 +60,21 @@ const Header = () => {
 
           {/* Acciones de usuario */}
           <div className="flex items-center space-x-4">
-            {/* Barra de búsqueda móvil (solo icono) */}
-            <button className="md:hidden p-2 text-gray-300 hover:text-white">
-              <FiSearch className="text-xl" />
-            </button>
+            {/* Enlace a Mis Entradas (visible en PC) */}
+            <Link 
+              to="/my-tickets" 
+              className="hidden md:flex items-center text-gray-300 hover:text-white transition px-3 py-2 rounded hover:bg-gray-800"
+            >
+              <FaTicketAlt className="mr-2" /> Mis entradas
+            </Link>
 
+            {/* Icono notificaciones (opcional) */}
             <button className="p-2 text-gray-300 hover:text-white relative hidden sm:block">
               <FiBell className="text-xl" />
               <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
             </button>
 
+            {/* Menú de usuario */}
             <div className="relative">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
@@ -94,13 +94,6 @@ const Header = () => {
                     onClick={() => setShowDropdown(false)}
                   >
                     Mi perfil
-                  </Link>
-                  <Link 
-                    to="/settings" 
-                    className="block px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white transition"
-                    onClick={() => setShowDropdown(false)}
-                  >
-                    Configuración
                   </Link>
                   <button
                     onClick={handleLogout}
@@ -130,22 +123,8 @@ const Header = () => {
             
             <nav className="flex flex-col space-y-3">
               <Link 
-                to="/movies" 
-                className="text-white hover:text-indigo-300 transition flex items-center py-2 px-2 rounded hover:bg-gray-800"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FiStar className="mr-3" /> Cartelera
-              </Link>
-              <Link 
-                to="/upcoming" 
-                className="text-gray-300 hover:text-white transition flex items-center py-2 px-2 rounded hover:bg-gray-800"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <FiClock className="mr-3" /> Próximamente
-              </Link>
-              <Link 
                 to="/my-tickets" 
-                className="text-gray-300 hover:text-white transition flex items-center py-2 px-2 rounded hover:bg-gray-800"
+                className="text-white hover:text-indigo-300 transition flex items-center py-2 px-2 rounded hover:bg-gray-800"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <FaTicketAlt className="mr-3" /> Mis entradas

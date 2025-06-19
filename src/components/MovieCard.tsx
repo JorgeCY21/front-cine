@@ -101,7 +101,7 @@ export default function MovieCard({ movie, onSelect }: Props) {
         </p>
         
         <button 
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1 sm:py-2 rounded transition text-xs sm:text-sm md:text-base"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1 sm:py-2 rounded transition text-xs sm:text-sm md:text-base cursor-pointer"
           onClick={(e) => {
             e.stopPropagation();
             onSelect(movie.id);

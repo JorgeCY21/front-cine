@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-6 pt-6 border-t border-gray-700 text-center text-gray-500 text-sm">
-          © 2023 CineMax Premium Experience. Todos los derechos reservados.
+          © 2025 CineMax Premium Experience. Todos los derechos reservados.
         </div>
       </div>
     </footer>

@@ -5,6 +5,7 @@ import { FaTicketAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import Footer from "../components/Footer";
 
 type SeatInfo = {
   id: number;
@@ -166,7 +167,7 @@ export default function ConfirmationPage() {
         <div className="container mx-auto flex justify-between items-center">
           <button 
             onClick={() => navigate(-1)}
-            className="flex items-center text-indigo-400 hover:text-indigo-300 transition"
+            className="flex items-center text-indigo-400 hover:text-indigo-300 transition  cursor-pointer"
           >
             <FiArrowLeft className="mr-2" /> Volver
           </button>
@@ -346,18 +347,25 @@ export default function ConfirmationPage() {
       </AnimatePresence>
       
       {/* Ticket premium con diseño atractivo */}
-      <div id="pdf-ticket-summary" style={{
-        width: '80mm',
-        padding: '5mm',
-        background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
-        color: '#2d3748',
-        fontFamily: '"Segoe UI", Roboto, sans-serif',
-        border: '1px solid #e2e8f0',
-        borderRadius: '8px',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <div 
+        id="pdf-ticket-summary" 
+        style={{
+          position: 'absolute',
+          left: '-9999px', // Mueve el elemento fuera del viewport
+          top: 0,
+          display: 'block', // Asegura que html2canvas pueda capturarlo
+          // Mantén el resto de tus estilos existentes
+          width: '80mm',
+          padding: '5mm',
+          background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
+          color: '#2d3748',
+          fontFamily: '"Segoe UI", Roboto, sans-serif',
+          border: '1px solid #e2e8f0',
+          borderRadius: '8px',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          overflow: 'hidden'
+        }}
+      >
         {/* Banda decorativa superior */}
         <div style={{
           position: 'absolute',
@@ -511,16 +519,7 @@ export default function ConfirmationPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-black/50 py-6 mt-12 border-t border-gray-800">
-        <div className="container mx-auto px-6 text-center">
-          <div className="flex justify-center space-x-6 mb-4">
-            <a href="#" className="text-gray-400 hover:text-white transition">Términos</a>
-            <a href="#" className="text-gray-400 hover:text-white transition">Privacidad</a>
-            <a href="#" className="text-gray-400 hover:text-white transition">Ayuda</a>
-          </div>
-          <p className="text-gray-500 text-sm">© 2023 CineMax Premium Experience. Todos los derechos reservados.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

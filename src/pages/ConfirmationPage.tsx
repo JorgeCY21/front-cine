@@ -172,7 +172,7 @@ export default function ConfirmationPage() {
 
       // Limpiar y redirigir a seleccionar asientos otra vez
       localStorage.removeItem("selectedSeats");
-      navigate(`/showtimes/${showtime?.id}`);
+      navigate(`/showtimes/${showtime?.movie.id}`);
       setIsCompleting(false);
     }
   };

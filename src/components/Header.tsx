@@ -38,7 +38,7 @@ const Header = () => {
               {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
 
-            <Link to="/" className="flex items-center">
+            <Link to="/movies" className="flex items-center">
               <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
                 CineMax
               </div>

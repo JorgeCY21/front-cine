@@ -1,128 +1,35 @@
-// src/pages/MoviesPage.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import MovieCarousel from "../components/MovieCarousel";
 import MovieCard from "../components/MovieCard";
 import Footer from "../components/Footer";
-
-type Movie = {
-  id: number;
-  title: string;
-  duration: number;
-  description: string;
-  genre: string;
-  rating: number;
-  posterUrl: string;
-  backdropUrl: string;
-  trailerUrl: string;
-};
-
-
-// Mover fuera del componente para no recrearlo en cada render
-const mockMovies: Movie[] = [
-  {
-    id: 1,
-    title: "Interstellar",
-    duration: 169,
-    description:
-      "Un grupo de exploradores se embarca en el viaje más importante en la historia de la humanidad.",
-    genre: "Ciencia ficción",
-    rating: 4.8,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/zSWdZVtXT7E?autoplay=1&mute=1&controls=0&loop=1&playlist=zSWdZVtXT7E",
-  },
-  {
-    id: 2,
-    title: "Inception",
-    duration: 148,
-    description:
-      "Dom Cobb es un ladrón con una rara habilidad para entrar en los sueños de la gente.",
-    genre: "Thriller psicológico",
-    rating: 4.7,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/YoHD9XEInc0?autoplay=1&mute=1&controls=0&loop=1&playlist=YoHD9XEInc0",
-  },
-  {
-    id: 3,
-    title: "Toy Story",
-    duration: 81,
-    description:
-      "Los juguetes de Andy, un niño de 6 años, temen que un nuevo regalo los sustituya.",
-    genre: "Animación",
-    rating: 4.5,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/dji4Fm0gCDVb9DQQMRvAI8YNnTz.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/wmiIUN-7qhE?autoplay=1&mute=1&controls=0&loop=1&playlist=wmiIUN-7qhE",
-  },
-  {
-    id: 4,
-    title: "The Dark Knight",
-    duration: 152,
-    description:
-      "Batman tiene que mantener el equilibrio entre el heroísmo y el vigilantismo.",
-    genre: "Acción",
-    rating: 4.9,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/h3jYanWMEJq6JJsCopy1h7cT2Hs.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/EXeTwQWrcwY?autoplay=1&mute=1&controls=0&loop=1&playlist=EXeTwQWrcwY",
-  },
-  {
-    id: 5,
-    title: "Pulp Fiction",
-    duration: 154,
-    description:
-      "Las vidas de dos mafiosos, un boxeador y un par de bandidos se entrelazan.",
-    genre: "Crimen",
-    rating: 4.6,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/s7EdQ4FqbhY?autoplay=1&mute=1&controls=0&loop=1&playlist=s7EdQ4FqbhY",
-  },
-  {
-    id: 6,
-    title: "The Shawshank Redemption",
-    duration: 142,
-    description:
-      "Un banquero es condenado a cadena perpetua por el asesinato de su esposa.",
-    genre: "Drama",
-    rating: 4.9,
-    posterUrl:
-      "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
-    backdropUrl:
-      "https://image.tmdb.org/t/p/original/wPU78OPN4BYEgWYdXyg0phMee64.jpg",
-    trailerUrl:
-      "https://www.youtube.com/embed/6hB3S9bIaco?autoplay=1&mute=1&controls=0&loop=1&playlist=6hB3S9bIaco",
-  },
-];
+import { getMovies } from "../services/movies.service";
+import { MovieDto } from "../dto/movie.dto";
 
 export default function MoviesPage() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [featuredMovie, setFeaturedMovie] = useState<Movie | null>(null);
+  const [movies, setMovies] = useState<MovieDto[]>([]);
+  const [featuredMovie, setFeaturedMovie] = useState<MovieDto | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
 
   // Carga inicial
   useEffect(() => {
-    setMovies(mockMovies);
-    setFeaturedMovie(mockMovies[0]);
+    const fetchMovies = async () => {
+      try {
+        const data: MovieDto[] = await getMovies();
+        if (!data) {
+          setMovies([])
+          return
+        }
+        setMovies(data);
+        setFeaturedMovie(data[0]); // Primera película destacada
+      } catch (error) {
+        console.error("Error al obtener películas:", error);
+      }
+    };
+
+    fetchMovies();
   }, []);
 
   const handleSelect = (movieId: number) => {
@@ -164,7 +71,7 @@ export default function MoviesPage() {
           {/* Title and Filters */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold">Películas en Cartelera</h2>
-            
+
             <div className="flex flex-wrap gap-2 w-full sm:w-auto">
               <button className="px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition whitespace-nowrap">
                 Estrenos

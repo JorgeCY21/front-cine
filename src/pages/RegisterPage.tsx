@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { register } from "../services/user.service"
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -8,8 +9,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ 
-    email?: string; 
+  const [errors, setErrors] = useState<{
+    email?: string;
     password?: string;
     firstName?: string;
     lastName?: string;
@@ -66,11 +67,24 @@ export default function RegisterPage() {
       return;
     }
 
-    setErrors({});
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    localStorage.setItem("user", JSON.stringify({ firstName, lastName, email }));
-    navigate("/movies");
+    try {
+      setErrors({});
+      setIsLoading(true);
+
+      const response = await register({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+      });
+
+      localStorage.setItem("user", JSON.stringify(response));
+      navigate("/movies");
+    } catch (error) {    
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const passwordValidation = getPasswordValidation(password);
@@ -200,7 +214,7 @@ export default function RegisterPage() {
               </button>
             </div>
             {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
-            
+
             {/* Indicadores de validación de contraseña */}
             <div className="mt-2 space-y-1">
               <div className="flex items-center">
@@ -251,11 +265,10 @@ export default function RegisterPage() {
         <button
           onClick={handleRegister}
           disabled={isLoading}
-          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${
-            isLoading 
-              ? 'bg-indigo-700 cursor-not-allowed' 
-              : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
-          }`}
+          className={`w-full mt-8 py-3 px-4 rounded-lg font-medium text-white transition-all duration-300 select-none ${isLoading
+            ? 'bg-indigo-700 cursor-not-allowed'
+            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-indigo-500/30'
+            }`}
         >
           {isLoading ? (
             <div className="flex items-center justify-center">

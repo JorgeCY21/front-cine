@@ -1,18 +1,8 @@
 import { FiChevronLeft, FiChevronRight, FiClock, FiStar } from "react-icons/fi";
-
-type Movie = {
-  id: number;
-  title: string;
-  duration: number;
-  description: string;
-  genre: string;
-  rating: number;
-  posterUrl: string;
-  backdropUrl: string;
-};
+import { MovieDto } from "../dto/movie.dto";
 
 interface Props {
-  movie: Movie;
+  movie: MovieDto;
   onPrev: () => void;
   onNext: () => void;
   onSelect: (id: number) => void;
@@ -23,7 +13,7 @@ export default function MovieCarousel({ movie, onPrev, onNext, onSelect }: Props
     <div 
       className="relative h-120 w-full overflow-hidden"
       style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8)), url(${movie.backdropUrl})`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8)), url(${movie.url_background})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }}
@@ -35,7 +25,7 @@ export default function MovieCarousel({ movie, onPrev, onNext, onSelect }: Props
 
         <div className="container mx-auto px-6 z-10 flex items-center">
           <div className="w-1/3 hidden md:block">
-            <img src={movie.posterUrl} alt={movie.title} className="rounded-lg shadow-2xl w-64 transform hover:scale-105 transition" />
+            <img src={movie.url_poster} alt={movie.title} className="rounded-lg shadow-2xl w-64 transform hover:scale-105 transition" />
           </div>
           <div className="md:w-2/3 space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">{movie.title}</h1>

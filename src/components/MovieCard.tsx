@@ -1,19 +1,9 @@
 import { FiClock, FiPlay, FiStar } from "react-icons/fi";
 import { useRef, useEffect, useState } from "react";
-
-type Movie = {
-  id: number;
-  title: string;
-  duration: number;
-  description: string;
-  genre: string;
-  rating: number;
-  posterUrl: string;
-  trailerUrl: string;
-};
+import { MovieDto } from "../dto/movie.dto";
 
 interface Props {
-  movie: Movie;
+  movie: MovieDto;
   onSelect: (id: number) => void;
 }
 
@@ -34,11 +24,11 @@ export default function MovieCard({ movie, onSelect }: Props) {
   useEffect(() => {
     // Solo cargar el trailer en hover si no es móvil
     if (!isMobile && isHovered && iframeRef.current) {
-      iframeRef.current.src = movie.trailerUrl;
+      iframeRef.current.src = movie.url_trailer ?? '';
     } else if (iframeRef.current) {
       iframeRef.current.src = "";
     }
-  }, [isHovered, movie.trailerUrl, isMobile]);
+  }, [isHovered, movie.url_trailer, isMobile]);
 
   return (
     <div
@@ -51,7 +41,7 @@ export default function MovieCard({ movie, onSelect }: Props) {
       <div className="relative pb-[150%]"> {/* Mantener relación de aspecto 2:3 */}
         {/* Imagen del póster */}
         <img
-          src={movie.posterUrl}
+          src={movie.url_poster}
           alt={movie.title}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
             (isMobile || !isHovered) ? "opacity-100" : "opacity-0"

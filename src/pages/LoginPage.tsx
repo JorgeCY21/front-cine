@@ -16,8 +16,6 @@ export default function LoginPage() {
 
       const user = await login({ email, password });
 
-      console.log('Usuario autenticado:', user);
-
       localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/movies");

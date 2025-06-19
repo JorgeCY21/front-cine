@@ -148,11 +148,27 @@ export default function ConfirmationPage() {
         }
       }, 1000);
 
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Error comprando tickets:", error);
 
       // Mostrar alerta clara al usuario
-      alert(error?.response?.data?.message || "No se pudo completar la compra. Intente nuevamente.");
+      type ErrorWithResponse = {
+        response?: {
+          data?: {
+            message?: string;
+          };
+        };
+      };
+
+      const err = error as ErrorWithResponse;
+      const errorMessage =
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        err.response?.data?.message
+          ? err.response.data.message
+          : "No se pudo completar la compra. Intente nuevamente.";
+      alert(errorMessage);
 
       // Limpiar y redirigir a seleccionar asientos otra vez
       localStorage.removeItem("selectedSeats");

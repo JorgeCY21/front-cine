@@ -1,79 +1,107 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiClock, FiMapPin, FiCalendar, FiArrowLeft } from "react-icons/fi";
+import { FiMapPin, FiCalendar, FiArrowLeft } from "react-icons/fi";
 import { FaTicketAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Header from "../components/Header";
-
-type Ticket = {
-  id: string;
-  movieTitle: string;
-  posterUrl: string;
-  showtime: string;
-  room: string;
-  seats: string[];
-  price: number;
-  format: string;
-  purchaseDate: string;
-};
+import { TicketDto } from "../dto/ticket.dto";
+import { misTickets } from "../services/tickets.service";
+import { ShowtimeDto } from "../dto/showtime.dto";
+import { SeatDto } from "../dto/seat.dto";
 
 export default function MyTicketsPage() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [tickets, setTickets] = useState<TicketDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [seats, setSeats] = useState<string[]>([])
+  const [total, setTotal] = useState<number>(0)
 
   useEffect(() => {
-    // Simulación de datos (en un caso real, harías una petición a tu API)
-    const mockTickets: Ticket[] = [
-      {
-        id: "1",
-        movieTitle: "Dune: Parte Dos",
-        posterUrl: "https://m.media-amazon.com/images/M/MV5BN2QyZGU4ZDctOWMzMy00NTc5LThlOGQtODhmNDI1NmY5YzAwXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_FMjpg_UX1000_.jpg",
-        showtime: "2024-05-15T18:30:00",
-        room: "Sala IMAX 3",
-        seats: ["A5", "A6"],
-        price: 45.90,
-        format: "IMAX",
-        purchaseDate: "2024-05-10T12:45:00",
-      },
-      {
-        id: "2",
-        movieTitle: "Deadpool & Wolverine",
-        posterUrl: "https://m.media-amazon.com/images/M/MV5BMDExZGMyOTMtMDgyYi00NGIwLWJhMTEtNWQ4MmIxMDA4YTMyXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg",
-        showtime: "2024-05-20T21:00:00",
-        room: "Sala 4DX 2",
-        seats: ["B3", "B4"],
-        price: 39.90,
-        format: "4DX",
-        purchaseDate: "2024-05-12T15:20:00",
-      },
-    ];
+    const fetchData = async () => {
+      // Simulación de datos (en un caso real, harías una petición a tu API)
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const mockTickets: TicketDto[] = await misTickets(user.id)
+      const seatsGenerado: SeatDto[] = generateSeats(mockTickets[0].showtime)
 
-    setTimeout(() => {
-      setTickets(mockTickets);
-      setLoading(false);
-    }, 1000);
+      const total = mockTickets.reduce((sum, ticket) => {
+        const seat = seatsGenerado.find(s => s.id === ticket.seat.id);
+        return seat ? sum + seat.price : sum;
+      }, 0);
+      
+      const seats: string[] = mockTickets.map(t => t.seat.row + t.seat.seat_number)
+      setSeats(seats)
+      setTotal(total)
+
+
+      setTimeout(() => {
+        setTickets(mockTickets);
+        setLoading(false);
+      }, 1000);
+    }
+    fetchData();
   }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("es-ES", { 
-      weekday: 'long', 
-      day: 'numeric', 
-      month: 'long', 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleDateString("es-ES", {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
+
+  function generateSeats(showtime: ShowtimeDto): SeatDto[] {
+    const capacity = showtime.room.capacity;
+    const seatsPerRow = 10;
+    const numRows = capacity / seatsPerRow;
+
+    const rows: string[] = Array.from({ length: numRows }, (_, i) =>
+      String.fromCharCode(65 + i)
+    );
+
+    const seatTypes: ("standard" | "premium" | "vip")[] = ["standard", "premium", "vip"];
+    const prices = { standard: 9.99, premium: 12.99, vip: 16.99 };
+
+    // Repartir tipos de asiento por fila
+    const typePerRow: ("standard" | "premium" | "vip")[] = [];
+    const base = Math.floor(numRows / seatTypes.length);
+    const remainder = numRows % seatTypes.length;
+
+    for (let i = 0; i < seatTypes.length; i++) {
+      const count = base + (i < remainder ? 1 : 0);
+      for (let j = 0; j < count; j++) {
+        typePerRow.push(seatTypes[i]);
+      }
+    }
+
+    const seats: SeatDto[] = [];
+
+    rows.forEach((rowLetter, rowIndex) => {
+      for (let num = 1; num <= seatsPerRow; num++) {
+        seats.push({
+          id: rowIndex * seatsPerRow + num,
+          seat_number: num,
+          row: rowLetter,
+          available: false,
+          type: typePerRow[rowIndex],
+          price: prices[typePerRow[rowIndex]],
+        });
+      }
+    });
+
+    return seats;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Header />
-      
+
       <main className="container mx-auto px-4 sm:px-6 py-8">
         {/* Encabezado */}
         <div className="flex items-center mb-8">
-          <Link 
-            to="/movies" 
+          <Link
+            to="/movies"
             className="mr-4 p-2 rounded-full hover:bg-gray-800 transition"
           >
             <FiArrowLeft className="text-xl" />
@@ -125,15 +153,14 @@ export default function MyTicketsPage() {
                   <div>
                     <span className="text-xs text-gray-400">Código #{ticket.id}</span>
                     <h3 className="text-xl font-bold truncate max-w-[200px] sm:max-w-none">
-                      {ticket.movieTitle}
+                      {ticket.showtime.movie.title}
                     </h3>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    ticket.format === "IMAX" 
-                      ? "bg-purple-600/30 text-purple-300" 
-                      : "bg-cyan-600/30 text-cyan-300"
-                  }`}>
-                    {ticket.format}
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${ticket.showtime.format === "IMAX"
+                    ? "bg-purple-600/30 text-purple-300"
+                    : "bg-cyan-600/30 text-cyan-300"
+                    }`}>
+                    {ticket.showtime.format}
                   </span>
                 </div>
 
@@ -142,8 +169,8 @@ export default function MyTicketsPage() {
                   {/* Poster */}
                   <div className="w-full sm:w-1/3 flex-shrink-0">
                     <img
-                      src={ticket.posterUrl}
-                      alt={ticket.movieTitle}
+                      src={ticket.showtime.movie.url_poster}
+                      alt={ticket.showtime.movie.title}
                       className="rounded-lg w-full h-auto object-cover shadow-md"
                     />
                   </div>
@@ -157,15 +184,15 @@ export default function MyTicketsPage() {
                       <div className="space-y-2">
                         <p className="flex items-center text-gray-300">
                           <FiCalendar className="mr-2 text-indigo-500" />
-                          {formatDate(ticket.showtime)}
+                          {formatDate(ticket.showtime.start_time.toString())}
                         </p>
                         <p className="flex items-center text-gray-300">
                           <FiMapPin className="mr-2 text-indigo-500" />
-                          {ticket.room}
+                          {ticket.showtime.room.name}
                         </p>
                         <p className="flex items-center text-gray-300">
                           <FaTicketAlt className="mr-2 text-indigo-500" />
-                          Asientos: {ticket.seats.join(", ")}
+                          Asientos: {seats.join(", ")}
                         </p>
                       </div>
                     </div>
@@ -174,7 +201,7 @@ export default function MyTicketsPage() {
                       <div>
                         <span className="text-sm text-gray-400">Precio total</span>
                         <p className="text-2xl font-bold text-yellow-400">
-                          S/.{ticket.price.toFixed(2)}
+                          S/.{total.toFixed(2)}
                         </p>
                       </div>
                       <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
@@ -186,7 +213,7 @@ export default function MyTicketsPage() {
 
                 {/* Footer del ticket */}
                 <div className="px-4 py-3 bg-gray-900/50 text-xs text-gray-400 border-t border-gray-800">
-                  Comprado el {formatDate(ticket.purchaseDate)}
+                  Comprado el {formatDate(ticket.purchase_date?.toString() || "")}
                 </div>
               </motion.div>
             ))}

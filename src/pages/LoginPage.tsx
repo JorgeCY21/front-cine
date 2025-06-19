@@ -150,7 +150,7 @@ export default function LoginPage() {
       </div>
 
       {/* Widget QR para móvil - Versión grande */}
-      <div className="absolute bottom-6 left-6 bg-gray-800/95 p-4 rounded-xl border-2 border-indigo-500/40 flex flex-col items-center z-20 shadow-xl">
+      <div className="hidden md:block absolute bottom-6 left-6 bg-gray-800/95 p-4 rounded-xl border-2 border-indigo-500/40 flex flex-col items-center z-20 shadow-xl">
         <div className="mb-3 text-sm font-medium text-center text-gray-200 max-w-[160px]">
           Escanea para ingresar desde tu móvil
         </div>

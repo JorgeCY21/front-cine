@@ -5,6 +5,7 @@ import ShowtimesPage from "../pages/ShowtimesPage";
 import SeatsPage from "../pages/SeatsPage";
 import ConfirmationPage from "../pages/ConfirmationPage";
 import RegisterPage from "../pages/RegisterPage";
+import MyTicketsPage from "../pages/MyTicketsPage";
 
 export default function Router() {
   return (
@@ -13,6 +14,7 @@ export default function Router() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/movies" element={<MoviesPage />} />
+        <Route path="/my-tickets" element={<MyTicketsPage />} />
         <Route path="/showtimes/:movieId" element={<ShowtimesPage />} />
         <Route path="/seats/:showtimeId" element={<SeatsPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />

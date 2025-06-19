@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/user.service";
 import QRCode from "react-qr-code";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -88,11 +90,11 @@ export default function LoginPage() {
           <div className="relative group">
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder=" "
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer"
+              className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-transparent peer pr-10"
             />
             <label 
               htmlFor="password" 
@@ -101,6 +103,13 @@ export default function LoginPage() {
               Contraseña
             </label>
             <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gray-600 peer-focus:bg-indigo-500 transition-all duration-300"></div>
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-300 focus:outline-none"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+            </button>
           </div>
         </div>
 
@@ -177,7 +186,7 @@ export default function LoginPage() {
       </div>
 
       {/* Estilos CSS para las animaciones */}
-      <style jsx>{`
+      <style>{`
         @keyframes blob {
           0% { transform: translate(0px, 0px) scale(1); }
           33% { transform: translate(30px, -50px) scale(1.1); }

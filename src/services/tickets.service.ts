@@ -15,3 +15,8 @@ export async function buyTickets(data: TicKetBuy[]) {
     tickets = await request<TicketDto[]>("post", `/tickets/bulk`, data);
   return tickets;
 }
+
+export async function misTickets(id: string): Promise<TicketDto[]> {
+  const tickets = await request<TicketDto[]>("get", `/tickets/user/${id}`);
+  return tickets !== null ? tickets : [];
+}

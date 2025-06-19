@@ -149,21 +149,21 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Widget QR para móvil */}
-      <div className="absolute bottom-4 left-4 bg-gray-800/90 p-3 rounded-lg border border-indigo-500/30 flex flex-col items-center z-20 shadow-lg">
-        <div className="mb-2 text-xs text-center text-gray-300 max-w-[120px]">
-          Para ingresar desde tu dispositivo móvil escanea este código
+      {/* Widget QR para móvil - Versión grande */}
+      <div className="absolute bottom-6 left-6 bg-gray-800/95 p-4 rounded-xl border-2 border-indigo-500/40 flex flex-col items-center z-20 shadow-xl">
+        <div className="mb-3 text-sm font-medium text-center text-gray-200 max-w-[160px]">
+          Escanea para ingresar desde tu móvil
         </div>
-        <div className="p-2 bg-white rounded">
+        <div className="p-3 bg-white rounded-lg shadow-inner">
           <QRCode 
             value={qrValue} 
-            size={80}
+            size={120}  // Tamaño aumentado de 80 a 120
             level="H"
             fgColor="#2d3748"
             bgColor="transparent"
           />
         </div>
-        <div className="mt-2 text-[10px] text-gray-400 text-center">
+        <div className="mt-3 text-xs text-gray-300 text-center font-mono bg-gray-900/50 px-2 py-1 rounded">
           {apiUrl.replace(/^https?:\/\//, '')}
         </div>
       </div>

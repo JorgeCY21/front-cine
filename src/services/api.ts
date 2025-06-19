@@ -23,7 +23,7 @@ type HTTPMethod = 'get' | 'post' | 'put' | 'delete';
 export async function request<T = unknown>(
   method: HTTPMethod,
   endpoint: string,
-  data: Record<string, T> = {}
+  data?: unknown
 ): Promise<T | null> {
   try {
     const config: AxiosRequestConfig = {};

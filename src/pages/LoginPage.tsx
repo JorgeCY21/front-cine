@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { login } from "../services/user.service";
 import QRCode from "react-qr-code";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -151,6 +151,11 @@ export default function LoginPage() {
               Únete a CineMax
             </span>
           </p>
+          <div className="text-center mb-6 text-xs">
+              <Link to="/forgot-password" className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium cursor-pointer">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           <p className="text-xs text-gray-500 mt-2">
             © 2025 CineMax Premium Experience
           </p>

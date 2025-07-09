@@ -6,6 +6,9 @@ import SeatsPage from "../pages/SeatsPage";
 import ConfirmationPage from "../pages/ConfirmationPage";
 import RegisterPage from "../pages/RegisterPage";
 import MyTicketsPage from "../pages/MyTicketsPage";
+import ForgotPassword from "../pages/RecoverPassword/ForgotPassword";
+import VerifyCode from "../pages/RecoverPassword/VerifyCode";
+import ResetPassword from "../pages/RecoverPassword/ResetPassword";
 
 export default function Router() {
   return (
@@ -18,6 +21,9 @@ export default function Router() {
         <Route path="/showtimes/:movieId" element={<ShowtimesPage />} />
         <Route path="/seats/:showtimeId" element={<SeatsPage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-reset-code" element={<VerifyCode />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );

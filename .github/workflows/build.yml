@@ -1,4 +1,4 @@
-name: Build
+name: Build and Analyze
 
 on:
   push:
@@ -9,16 +9,36 @@ jobs:
   build:
     name: Build and analyze
     runs-on: windows-latest
-    
+
     steps:
+      # 1️⃣ Clonar el repo completo
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: SonarSource/sonarqube-scan-action@v6
+
+      # 2️⃣ Instalar dependencias
+      - name: Install dependencies
+        run: npm ci
+
+      # 3️⃣ Compilar TypeScript para verificar errores
+      - name: Compile TypeScript
+        run: npx tsc --noEmit
+
+      # 4️⃣ Ejecutar SonarScanner
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # Optional: fail job if Quality Gate is red
+        with:
+          args: >
+            -Dsonar.projectKey=CinemaxPremium
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/node_modules/**
+            -Dsonar.language=ts
+            -Dsonar.sourceEncoding=UTF-8
+
+      # 5️⃣ Opcional: Fallar si la Quality Gate es roja
       # - uses: SonarSource/sonarqube-quality-gate-action@v1
       #   timeout-minutes: 5
       #   env:
